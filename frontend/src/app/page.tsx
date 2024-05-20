@@ -46,10 +46,10 @@ async function CrudShowcase() {
     <div className="w-full max-w-xs">
       <div>
         {
-          // eslint-disable-next-line
-          data.length ? (
-            // eslint-disable-next-line
-            data.map((item) => <div key={item.id}>{item.name}</div>)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+          data ? (
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+            data.map((item: any) => <div key={item.id}>{item.name}</div>)
           ) : (
             <p>No items found</p>
           )
