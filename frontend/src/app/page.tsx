@@ -41,7 +41,7 @@ export default async function Home() {
 }
 
 async function CrudShowcase() {
-  const { data } = api.items.getAll.useQuery();
+  const { data } = api.items.getAll();
 
   return (
     <div className="w-full max-w-xs">
