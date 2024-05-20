@@ -16,9 +16,9 @@ export default async function Home() {
               </h1>
               <p className="mx-auto mb-6 mt-4 max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
                 Never miss a great deal again with our innovative platform.
-                Whether you're looking for electronics, fashion, home goods, or
-                more, BuyBridge brings the best offers from trusted retailers to
-                one place. Shop hassle-free and with confidence.
+                Whether you&apos;re looking for electronics, fashion, home
+                goods, or more, BuyBridge brings the best offers from trusted
+                retailers to one place. Shop hassle-free and with confidence.
               </p>
               <div className="mt-6 space-x-4">
                 <EmailSignUpButton />
