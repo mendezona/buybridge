@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 // TODO: Remove this comment
-import { CreatePost } from "~/app/_components/create-post";
 import { api } from "~/trpc/server";
 
 export default async function Home() {
