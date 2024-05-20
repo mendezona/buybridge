@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { type Item } from "@prisma/client";
 import { api } from "~/trpc/server";
 
 export default async function Home() {
@@ -40,20 +41,16 @@ export default async function Home() {
 }
 
 async function CrudShowcase() {
-  const data = await api.items.getAll();
+  const data: Item[] = await api.items.getAll();
 
   return (
     <div className="w-full max-w-xs">
       <div>
-        {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-          data ? (
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-            data.map((item: any) => <div key={item.id}>{item.name}</div>)
-          ) : (
-            <p>No items found</p>
-          )
-        }
+        {data ? (
+          data.map((item: Item) => <div key={item.id}>{item.name}</div>)
+        ) : (
+          <p>No items found</p>
+        )}
       </div>
     </div>
   );
