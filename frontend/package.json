@@ -13,8 +13,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@planetscale/database": "^1.16.0",
-    "@prisma/adapter-planetscale": "^5.10.2",
     "@prisma/client": "^5.10.2",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.25.0",
