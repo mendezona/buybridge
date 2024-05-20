@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-// TODO: Remove this comment
 import { api } from "~/trpc/server";
 
 export default async function Home() {
@@ -41,13 +40,11 @@ export default async function Home() {
 }
 
 async function CrudShowcase() {
-  const { data } = api.items.getAll();
+  const { data } = await api.items.getAll();
 
   return (
     <div className="w-full max-w-xs">
       <div>{data?.map((item) => <div key={item.id}>{item.name}</div>)}</div>
-
-      {/* <CreatePost /> */}
     </div>
   );
 }
