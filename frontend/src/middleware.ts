@@ -39,10 +39,10 @@ export default clerkMiddleware(async (auth) => {
       guilds,
     );
 
-    return isUserAuthorised ? NextResponse.next() : NextResponse.error();
+    return isUserAuthorised ? NextResponse.next() : NextResponse.next();
   } catch (error) {
     console.error("Failed to retrieve user or guild information:", error);
-    return NextResponse.error();
+    return NextResponse.next();
   }
 });
 
