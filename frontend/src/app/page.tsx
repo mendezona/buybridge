@@ -21,10 +21,10 @@ export default async function Home() {
                 goods, or more, BuyBridge brings the best offers from trusted
                 retailers to one place. Shop hassle-free and with confidence.
               </p>
-              <div className="mt-6 space-x-4">
+              <div className="mt-6 grid gap-4">
                 <EmailSignUpButton />
                 <SignedIn>
-                  <Button variant="secondary" className=" px-4 py-2 font-bold">
+                  <Button variant="secondary" className="py-2 font-bold">
                     <PaperPlaneIcon className="mr-2 h-4 w-4" />
                     Go to Dashboard
                   </Button>
