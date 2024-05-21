@@ -14,6 +14,7 @@ async function CrudShowcase() {
 
   return (
     <div className="w-full max-w-xs">
+      <h1>UNDER CONSTRUCTION - DASHBOARD PAGE</h1>
       <div>
         {data ? (
           data.map((item: Item) => <div key={item.id}>{item.name}</div>)
