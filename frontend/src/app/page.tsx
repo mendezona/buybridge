@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { PersonIcon, StarIcon } from "@radix-ui/react-icons";
+import { PaperPlaneIcon, PersonIcon, StarIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
 import { DiscordLoginButton } from "./_components/discordLoginButton";
@@ -24,8 +24,9 @@ export default async function Home() {
               <div className="mt-6 space-x-4">
                 <EmailSignUpButton />
                 <SignedIn>
-                  <Button>
-                    <a href="/dashboard">Go to Dashboard</a>
+                  <Button variant="secondary" className=" px-4 py-2 font-bold">
+                    <PaperPlaneIcon className="mr-2 h-4 w-4" />
+                    Go to Dashboard
                   </Button>
                 </SignedIn>
                 <SignedOut>
