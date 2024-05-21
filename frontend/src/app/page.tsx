@@ -50,7 +50,6 @@ export default async function Home() {
             </div>
             <div className="flex items-center justify-center">
               <Image
-                className="rounded-lg shadow-lg dark:shadow-none"
                 src="/ordershipped.svg"
                 alt="Hero Image"
                 layout="responsive"
@@ -70,7 +69,6 @@ export default async function Home() {
             <div className="flex flex-col items-center rounded-lg bg-white text-center shadow-md dark:bg-gray-950 dark:shadow-none">
               <div className="p-6">
                 <Image
-                  className="rounded-lg shadow-lg dark:shadow-none"
                   src="/analytics.svg"
                   alt="Analytics"
                   layout="responsive"
@@ -92,7 +90,6 @@ export default async function Home() {
             <div className="flex flex-col items-center rounded-lg bg-white text-center shadow-md dark:bg-gray-950 dark:shadow-none ">
               <div className="p-6">
                 <Image
-                  className="rounded-lg shadow-lg dark:shadow-none"
                   src="/automation.svg"
                   alt="Automation"
                   layout="responsive"
@@ -114,7 +111,6 @@ export default async function Home() {
             <div className="flex flex-col items-center rounded-lg bg-white text-center shadow-md dark:bg-gray-950 dark:shadow-none">
               <div className="p-6">
                 <Image
-                  className="rounded-lg shadow-lg dark:shadow-none"
                   src="/roi.svg"
                   alt="Return on Investment"
                   layout="responsive"
