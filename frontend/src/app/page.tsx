@@ -20,7 +20,7 @@ export default async function Home() {
                 retailers to one place. Shop hassle-free and with confidence.
               </p>
               <div className="mt-6 grid gap-4">
-                <EmailSignUpButton />
+                {/* <EmailSignUpButton /> */}
                 <DiscordLoginButton />
               </div>
               <div className="mt-8 flex items-center justify-center sm:justify-start">
@@ -33,7 +33,7 @@ export default async function Home() {
                 <div className="ml-6 flex items-center space-x-2">
                   <PersonIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                   <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    10,000+ users
+                    200+ users
                   </span>
                 </div>
               </div>
@@ -69,11 +69,13 @@ export default async function Home() {
                   }}
                 />
                 <h3 className="mt-4 text-xl font-bold dark:text-white">
-                  Advanced Analytics
+                  Save 5-10% on Prices
                 </h3>
                 <p className="mb-4 mt-2 text-gray-500 dark:text-gray-400">
-                  Gain deep insights into your business with our powerful
-                  analytics tools.
+                  Enjoy savings of 5-10% on prices when shopping on our
+                  platform, thanks to our highly scalable and reliable
+                  infrastructure. Grow your business with confidence and
+                  efficiency.
                 </p>
               </div>
             </div>
@@ -90,11 +92,12 @@ export default async function Home() {
                   }}
                 />
                 <h3 className="mt-4 text-xl font-bold dark:text-white">
-                  Workflow Automation
+                  Smart Purchasing Automation
                 </h3>
                 <p className="mb-4 mt-2 text-gray-500 dark:text-gray-400">
-                  Streamline your business processes with our intuitive
-                  automation features.
+                  Identify the best periods to buy and automate alerts with our
+                  intuitive workflow automation features, streamlining your
+                  business processes effortlessly.
                 </p>
               </div>
             </div>
@@ -111,11 +114,12 @@ export default async function Home() {
                   }}
                 />
                 <h3 className="mt-4 text-xl font-bold dark:text-white">
-                  Average User increases ROI by 50%
+                  Advanced Analytics (Coming Soon)
                 </h3>
                 <p className="mb-4 mt-2 text-gray-500 dark:text-gray-400">
-                  Grow your business with our highly scalable and reliable
-                  infrastructure.
+                  Experience unparalleled value with our advanced analytics
+                  tools, ensuring you always get the best price for your
+                  business insights.
                 </p>
               </div>
             </div>
