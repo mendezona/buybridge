@@ -2,7 +2,7 @@ import puppeteer from "puppeteer-core";
 
 async function main(): Promise<void> {
   console.log("Hello, World!");
-  const AUTH = "brd-customer-hl_a4b35976-zone-scraping_browser1:v6l20p26jc6g";
+  const AUTH = `${process.env.BRIGHT_DATA_USERNAME}:${process.env.BRIGHT_DATA_PASSWORD}`;
   const SBR_WS_ENDPOINT = `wss://${AUTH}@brd.superproxy.io:9222`;
   console.log("Starting the script...");
 
