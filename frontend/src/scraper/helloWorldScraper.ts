@@ -34,6 +34,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err) => {
-  console.error("Error in main function:", err.stack || err);
+  console.error("Error in main function:", err);
   process.exit(1);
 });
