@@ -2,6 +2,8 @@ import { SignOutButton } from "@clerk/nextjs";
 import { type Item } from "@prisma/client";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/server";
+import { ComparisonTable } from "../_components/comparisonTable/comparisonTable";
+import { convertPlainObjectsToAGGridRowData } from "../_components/comparisonTable/comparisonTable.helpers";
 
 export default async function Dashboard() {
   return (
@@ -13,9 +15,11 @@ export default async function Dashboard() {
 
 async function CrudShowcase() {
   const data: Item[] = await api.items.getAll();
+  const convertedData = convertPlainObjectsToAGGridRowData(data);
 
   return (
     <div>
+      <ComparisonTable rowData={convertedData} />
       <div className="flex h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-800">
         <div className="relative flex w-full max-w-md flex-col gap-4 px-6">
           <div className="p8 flex justify-center">
