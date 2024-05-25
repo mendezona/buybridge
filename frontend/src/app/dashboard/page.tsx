@@ -30,7 +30,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -54,12 +53,9 @@ import {
 } from "~/components/ui/tooltip";
 import { api } from "~/trpc/server";
 import { ComparisonTable } from "../_components/comparisonTable/comparisonTable";
-import { type Payment } from "../_components/comparisonTable/comparisonTable.constants";
+import { columns } from "../_components/comparisonTable/comparisonTable.constants";
 import { convertToPlainObjects } from "../_components/comparisonTable/comparisonTable.helpers";
-import {
-  columns,
-  type ComparisonTableItem,
-} from "../_components/comparisonTable/comparisonTable.types";
+import { type ComparisonTableItem } from "../_components/comparisonTable/comparisonTable.types";
 
 export default async function Dashboard() {
   return (
