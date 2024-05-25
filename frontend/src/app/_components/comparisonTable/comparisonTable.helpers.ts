@@ -1,22 +1,29 @@
 import { type Item } from "@prisma/client";
-import { type ComparisonTableRowData } from "./comparisonTable.types";
+import { type ComparisonTableItem } from "./comparisonTable.types";
 
-export function convertItemToPlainObject(item: Item): ComparisonTableRowData {
+export function convertDatabaseItemToPlainObjectType(
+  item: Item,
+): ComparisonTableItem {
+  console.log("item", item);
+
+  const kauflandPrice: number = item.kauflandPrice.toNumber();
+  const profit: number =
+    item.kauflandPrice.toNumber() - item.amazonPrice.toNumber();
+  const returnOnInvestment: number = profit / kauflandPrice;
+  const updatedAt: string = item.updatedAt.toString();
+
   return {
     ...item,
-    amazonPrice: item.amazonPrice.toNumber(),
-    amazonShippingFee: item.amazonShippingFee.toNumber(),
-    kauflandPrice: item.kauflandPrice.toNumber(),
-    kauflandSellerFee: item.kauflandSellerFee.toNumber(),
-    createdAt: item.createdAt.toISOString(),
-    updatedAt: item.updatedAt.toISOString(),
+    profit,
+    returnOnInvestment,
+    updatedAt,
   };
 }
 
-export function convertPlainObjectsToAGGridRowData(
+export function convertToPlainObjects(
   plainObjects: Item[],
-): ComparisonTableRowData[] {
-  return plainObjects.map((plainObject: Item): ComparisonTableRowData => {
-    return convertItemToPlainObject(plainObject);
+): ComparisonTableItem[] {
+  return plainObjects.map((plainObject: Item): ComparisonTableItem => {
+    return convertDatabaseItemToPlainObjectType(plainObject);
   });
 }

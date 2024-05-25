@@ -1,60 +1,74 @@
 "use client";
 
-import { type ColDef } from "ag-grid-community";
-import "ag-grid-community/styles/ag-grid.css"; // Core CSS
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
-import { AgGridReact } from "ag-grid-react"; // React Grid Logic
-import { useMemo } from "react";
-import { type ComparisonTableRowData } from "./comparisonTable.types";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
+import { type DataTableProps } from "./comparisonTable.types";
 
-export function ComparisonTable({
-  rowData,
-}: {
-  rowData: ComparisonTableRowData[];
-}) {
-  const GridExample = () => {
-    const columnDefs = useMemo(
-      () => [
-        { headerName: "ID", field: "id" },
-        { headerName: "Name", field: "name" },
-        { headerName: "EAN", field: "ean" },
-        { headerName: "FBM Seller", field: "fbmSeller" },
-        { headerName: "FBA", field: "fba" },
-        { headerName: "Amazon Price", field: "amazonPrice" },
-        { headerName: "Amazon Stock Level", field: "amazonStockLevel" },
-        { headerName: "Amazon Shipping Fee", field: "amazonShippingFee" },
-        { headerName: "Kaufland Price", field: "kauflandPrice" },
-        { headerName: "Kaufland Offer", field: "kauflandOffer" },
-        { headerName: "Kaufland Seller Fee", field: "kauflandSellerFee" },
-        { headerName: "Created At", field: "createdAt" },
-        { headerName: "Updated At", field: "updatedAt" },
-      ],
-      [],
-    );
-
-    const defaultColDef: ColDef = {
-      flex: 1,
-    };
-
-    // Container: Defines the grid's theme & dimensions.
-    return (
-      <div
-        className="ag-theme-quartz" // applying the grid theme
-        style={{ width: "70vw", height: 500 }} // the grid will fill the size of the parent container
-      >
-        <h1>This is the grid</h1>
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-        />
-      </div>
-    );
-  };
+export function ComparisonTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
-    <div>
-      <GridExample />
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 }
