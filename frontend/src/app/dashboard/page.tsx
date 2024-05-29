@@ -70,7 +70,7 @@ async function CrudShowcase() {
   const convertedData: ComparisonTableItem[] = convertToPlainObjects(data);
 
   return (
-    <div>
+    <div className="bg-background">
       <CrudShowcaseTwo data={convertedData} />
       <div className="flex h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-800">
         <div className="relative flex w-full max-w-md flex-col gap-4 px-6">

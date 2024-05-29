@@ -28,14 +28,22 @@ import { db } from "~/server/db";
  */
 export const createTRPCContext = async (opts: {
   headers: Headers;
-  req: NextRequest;
+  req?: NextRequest;
 }) => {
-  const session = getAuth(opts.req);
-  const currentUserId = session.userId;
+  if (opts.req) {
+    const session = getAuth(opts.req);
+    const currentUserId = session.userId;
+
+    return {
+      db,
+      currentUserId: opts.req ? currentUserId : null,
+      ...opts,
+    };
+  }
 
   return {
     db,
-    currentUserId,
+    currentUserId: null,
     ...opts,
   };
 };
