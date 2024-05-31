@@ -31,3 +31,7 @@ export function convertToPlainObjects(
     return convertDatabaseItemToPlainObjectType(plainObject);
   });
 }
+
+export function decimalToPercentage(decimal: number, precision = 2): string {
+  return `${(decimal * 100).toFixed(precision)}%`;
+}

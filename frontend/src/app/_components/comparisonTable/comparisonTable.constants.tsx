@@ -3,6 +3,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { decimalToPercentage } from "./comparisonTable.helpers";
 import { type ComparisonTableItem } from "./comparisonTable.types";
 
 export const columns: ColumnDef<ComparisonTableItem>[] = [
@@ -11,6 +12,7 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
     header: ({ column }) => {
       return (
         <Button
+          style={{ padding: 0 }}
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -33,6 +35,7 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
     header: ({ column }) => {
       return (
         <Button
+          style={{ padding: 0 }}
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -48,7 +51,11 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
         currency: "USD",
       }).format(amount);
 
-      return <div className="font-medium">{formatted}</div>;
+      return amount > 0 ? (
+        <div className="font-medium text-green-600">{formatted}</div>
+      ) : (
+        <div className="font-medium text-red-600">{formatted}</div>
+      );
     },
   },
   {
@@ -56,12 +63,24 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
     header: ({ column }) => {
       return (
         <Button
+          style={{ padding: 0 }}
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           ROI
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const roiPercentage = decimalToPercentage(
+        row.getValue("returnOnInvestment"),
+      );
+
+      return parseFloat(roiPercentage) > 0 ? (
+        <div className="font-medium text-green-600">{roiPercentage}</div>
+      ) : (
+        <div className="font-medium text-red-600">{roiPercentage}</div>
       );
     },
   },
@@ -74,7 +93,9 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
         <>
           {link && (
             <a href={link as string} target="_black" rel="noopener noreferrer">
-              <Button variant="link">View item on Kaufland</Button>
+              <Button style={{ padding: 0 }} variant="link">
+                View item on Kaufland
+              </Button>
             </a>
           )}
         </>
@@ -90,7 +111,9 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
         <>
           {link && (
             <a href={link as string} target="_black" rel="noopener noreferrer">
-              <Button variant="link">View item on Kaufland</Button>
+              <Button style={{ padding: 0 }} variant="link">
+                View item on Amazon
+              </Button>
             </a>
           )}
         </>

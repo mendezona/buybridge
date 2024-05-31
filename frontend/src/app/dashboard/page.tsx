@@ -73,7 +73,7 @@ async function CrudShowcase() {
   return (
     <div className="bg-background">
       <CrudShowcaseTwo data={convertedData} />
-      <div className="flex h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-800">
+      {/* <div className="flex h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-800">
         <div className="relative flex w-full max-w-md flex-col gap-4 px-6">
           <div className="p8 flex justify-center">
             <h1 className="text-center text-4xl font-bold text-gray-900 dark:text-gray-100">
@@ -86,7 +86,7 @@ async function CrudShowcase() {
             </SignOutButton>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -316,7 +316,7 @@ async function CrudShowcaseTwo({ data }: { data: ComparisonTableItem[] }) {
                   Archived
                 </TabsTrigger>
               </TabsList>
-              <div className="ml-auto flex items-center gap-2">
+              {/* <div className="ml-auto flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="h-7 gap-1">
@@ -350,7 +350,7 @@ async function CrudShowcaseTwo({ data }: { data: ComparisonTableItem[] }) {
                     Add Product
                   </span>
                 </Button>
-              </div>
+              </div> */}
             </div>
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
