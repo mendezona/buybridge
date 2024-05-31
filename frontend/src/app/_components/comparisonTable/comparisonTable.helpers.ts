@@ -8,11 +8,11 @@ dayjs.extend(relativeTime);
 export function convertDatabaseItemToPlainObjectType(
   item: Item,
 ): ComparisonTableItem {
-  console.log("item", item);
-
-  const kauflandPrice: number = item.kauflandPrice.toNumber();
+  const kauflandPrice: number = item.kauflandPrice?.toNumber() ?? 0;
   const profit: number =
-    item.kauflandPrice.toNumber() - item.amazonPrice.toNumber();
+    item.amazonPrice && item.kauflandPrice
+      ? item.kauflandPrice.toNumber() - item.amazonPrice.toNumber()
+      : 0;
   const returnOnInvestment: number = profit / kauflandPrice;
   const updatedAt: string = dayjs(item.updatedAt).fromNow();
 

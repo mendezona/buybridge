@@ -11,10 +11,10 @@ export interface DataTableProps<TData, TValue> {
 export type DatabaseItem = RouterOutputs["items"]["getAll"];
 
 export interface ComparisonTableItem {
-  productName: string;
-  profit: number;
-  returnOnInvestment: number;
-  kauflandLink: string;
-  amazonLink: string;
+  productName?: string | null;
+  profit?: number | null;
+  returnOnInvestment?: number | null;
+  kauflandLink?: string | null;
+  amazonLink?: string | null;
   updatedAt: string;
 }
