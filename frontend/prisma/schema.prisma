@@ -14,6 +14,7 @@ model Item {
     id                Int      @id @default(autoincrement())
     productName       String?
     ean               String   @unique
+    asin              String?  @unique
     fbmSeller         String?
     fba               String?
     amazonPrice       Decimal? @db.Decimal(10, 2)

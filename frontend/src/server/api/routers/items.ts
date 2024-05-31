@@ -1,12 +1,15 @@
 import { type Item } from "@prisma/client";
 import { z } from "zod";
+import { amazonScrapper } from "~/scraper/amazonScrapper/amazonScrapper";
 import { kauflandScrapper } from "~/scraper/kauflandScrapper/kauflandScrapper";
+import { type KauflandProductData } from "~/scraper/kauflandScrapper/kauflandScrapper.types";
 import { detectAndConvertPrice } from "~/scraper/scrapper.helpers";
 import {
   createTRPCRouter,
   privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { type AmazonProductData } from "../../../scraper/amazonScrapper/amazonScrapper.types";
 
 export const itemsRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -23,7 +26,8 @@ export const itemsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.currentUserId as string | null;
       if (authorId) {
-        const kauflandProductData = await kauflandScrapper(input);
+        const kauflandProductData: KauflandProductData =
+          await kauflandScrapper(input);
         if (kauflandProductData.productFound) {
           await ctx.db.item.upsert({
             where: { ean: input.ean },
@@ -43,11 +47,37 @@ export const itemsRouter = createTRPCRouter({
               kauflandLink: kauflandProductData.kauflandLink,
             },
           });
+
+          const amazonProductData: AmazonProductData = await amazonScrapper({
+            ean: input.ean,
+          });
+          if (amazonProductData.productFound) {
+            await ctx.db.item.upsert({
+              where: { ean: input.ean },
+              update: {
+                amazonPrice:
+                  amazonProductData.amazonPrice &&
+                  detectAndConvertPrice(amazonProductData.amazonPrice),
+                amazonLink: amazonProductData.amazonLink,
+              },
+              create: {
+                ean: input.ean,
+                kauflandPrice:
+                  amazonProductData.amazonPrice &&
+                  detectAndConvertPrice(amazonProductData.amazonPrice),
+                amazonLink: amazonProductData.amazonLink,
+              },
+            });
+          }
         }
 
+        console.log("Product added to catalogue");
         return "Product added to catalogue";
       }
 
+      console.log(
+        "An error occured attempting to add this product to the catalogue",
+      );
       return "An error occured attempting to add this product to the catalogue";
     }),
 });
