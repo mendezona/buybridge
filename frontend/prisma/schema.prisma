@@ -12,20 +12,20 @@ datasource db {
 
 model Item {
     id                Int      @id @default(autoincrement())
-    productName       String
+    productName       String?
     ean               String
-    fbmSeller         String
-    fba               String
-    amazonPrice       Decimal  @db.Decimal(10, 2)
-    amazonStockLevel  String
-    amazonShippingFee Decimal  @db.Decimal(10, 2)
-    amazonLink        String
-    kauflandPrice     Decimal  @db.Decimal(10, 2)
-    kauflandOffer     String
-    kauflandSellerFee Decimal  @db.Decimal(10, 2)
-    kauflandLink      String
+    fbmSeller         String?
+    fba               String?
+    amazonPrice       Decimal? @db.Decimal(10, 2)
+    amazonStockLevel  String?
+    amazonShippingFee Decimal? @db.Decimal(10, 2)
+    amazonLink        String?
+    kauflandPrice     Decimal? @db.Decimal(10, 2)
+    kauflandOffer     String?
+    kauflandSellerFee Decimal? @db.Decimal(10, 2)
+    kauflandLink      String?
     createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
+    updatedAt         DateTime @default(now()) @updatedAt
 
-    @@index([id])
+    @@index([ean])
 }

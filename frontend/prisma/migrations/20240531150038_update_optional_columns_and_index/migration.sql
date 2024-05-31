@@ -1,0 +1,19 @@
+-- DropIndex
+DROP INDEX "Item_id_idx";
+
+-- AlterTable
+ALTER TABLE "Item" ALTER COLUMN "productName" DROP NOT NULL,
+ALTER COLUMN "fbmSeller" DROP NOT NULL,
+ALTER COLUMN "fba" DROP NOT NULL,
+ALTER COLUMN "amazonPrice" DROP NOT NULL,
+ALTER COLUMN "amazonStockLevel" DROP NOT NULL,
+ALTER COLUMN "amazonShippingFee" DROP NOT NULL,
+ALTER COLUMN "kauflandPrice" DROP NOT NULL,
+ALTER COLUMN "kauflandOffer" DROP NOT NULL,
+ALTER COLUMN "kauflandSellerFee" DROP NOT NULL,
+ALTER COLUMN "updatedAt" SET DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "amazonLink" DROP NOT NULL,
+ALTER COLUMN "kauflandLink" DROP NOT NULL;
+
+-- CreateIndex
+CREATE INDEX "Item_ean_idx" ON "Item"("ean");
