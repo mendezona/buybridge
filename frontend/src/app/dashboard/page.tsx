@@ -56,6 +56,7 @@ import { ComparisonTable } from "../_components/comparisonTable/comparisonTable"
 import { columns } from "../_components/comparisonTable/comparisonTable.constants";
 import { convertToPlainObjects } from "../_components/comparisonTable/comparisonTable.helpers";
 import { type ComparisonTableItem } from "../_components/comparisonTable/comparisonTable.types";
+import { NewProductForm } from "../_components/newProductForm";
 
 export default async function Dashboard() {
   return (
@@ -300,6 +301,8 @@ async function CrudShowcaseTwo({ data }: { data: ComparisonTableItem[] }) {
           </DropdownMenu>
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+          <NewProductForm />
+
           <Tabs defaultValue="all">
             <div className="flex items-center">
               <TabsList>
