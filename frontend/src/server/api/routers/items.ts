@@ -1,6 +1,7 @@
 import { type Item } from "@prisma/client";
 import { z } from "zod";
-import { kauflandScrapper } from "~/scraper/kauflandScrapper";
+import { kauflandScrapper } from "~/scraper/kauflandScrapper/kauflandScrapper";
+import { detectAndConvertPrice } from "~/scraper/scrapper.helpers";
 import {
   createTRPCRouter,
   privateProcedure,
@@ -20,6 +21,33 @@ export const itemsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return "Product added to catelogue";
+      const authorId = ctx.currentUserId as string | null;
+      if (authorId) {
+        const kauflandProductData = await kauflandScrapper(input);
+        if (kauflandProductData.productFound) {
+          await ctx.db.item.upsert({
+            where: { ean: input.ean },
+            update: {
+              productName: kauflandProductData.productName,
+              kauflandPrice:
+                kauflandProductData.kauflandPrice &&
+                detectAndConvertPrice(kauflandProductData.kauflandPrice),
+              kauflandLink: kauflandProductData.kauflandLink,
+            },
+            create: {
+              ean: input.ean,
+              productName: kauflandProductData.productName,
+              kauflandPrice:
+                kauflandProductData.kauflandPrice &&
+                detectAndConvertPrice(kauflandProductData.kauflandPrice),
+              kauflandLink: kauflandProductData.kauflandLink,
+            },
+          });
+        }
+
+        return "Product added to catalogue";
+      }
+
+      return "An error occured attempting to add this product to the catalogue";
     }),
 });

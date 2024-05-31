@@ -13,7 +13,7 @@ datasource db {
 model Item {
     id                Int      @id @default(autoincrement())
     productName       String?
-    ean               String
+    ean               String   @unique
     fbmSeller         String?
     fba               String?
     amazonPrice       Decimal? @db.Decimal(10, 2)
@@ -26,6 +26,4 @@ model Item {
     kauflandLink      String?
     createdAt         DateTime @default(now())
     updatedAt         DateTime @default(now()) @updatedAt
-
-    @@index([ean])
 }
