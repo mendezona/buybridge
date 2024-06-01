@@ -13,6 +13,11 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "~/server/db";
 
+//All trpc functions can be run max for 30 seconds
+export const config = {
+  maxDuration: 30,
+};
+
 /**
  * 1. CONTEXT
  *
