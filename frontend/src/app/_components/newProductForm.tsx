@@ -47,7 +47,7 @@ export function NewProductForm() {
         onSuccess: () => {
           setLoading(false);
           toast({
-            title: "You submitted the following values:",
+            title: "Success! :)",
             description:
               "Successfully added product to database, please refresh the page",
           });
@@ -55,7 +55,7 @@ export function NewProductForm() {
         onError: () => {
           setLoading(false);
           toast({
-            title: "Error",
+            title: "Error :(",
             description:
               "There was an error finding information about that product on Amazon or Kaufland",
           });

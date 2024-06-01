@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer-core";
+import { waitForJavascriptToLoad } from "../scrapper.helpers";
 import { type KauflandProductData } from "./kauflandScrapper.types";
 
 export async function kauflandScrapper({
@@ -16,7 +17,6 @@ export async function kauflandScrapper({
     const browser = await puppeteer.connect({
       browserWSEndpoint: SBR_WS_ENDPOINT,
     });
-
     console.log("Connected to browser");
 
     const page = await browser.newPage();
@@ -36,43 +36,83 @@ export async function kauflandScrapper({
       console.log("Accept cookies button not found, continuing...");
     }
 
+    await waitForJavascriptToLoad(page, () => {
+      return document.querySelector("article.product .product-link") !== null;
+    });
     await page.waitForSelector("article.product");
     const firstArticle = await page.$("article.product");
-    const firstLink = await firstArticle?.$("a.product-link");
-    await firstLink?.click();
-    console.log("Clicked first item link");
 
-    // Find and save product name
-    let productName: string | null = null;
-    await page.waitForSelector("h1.rd-title");
-    const productNameElement = await page.$("h1.rd-title");
-    if (productNameElement) {
-      productName = await page.evaluate(
-        (element) => element?.textContent,
-        productNameElement,
+    let productName = undefined;
+    let kauflandPrice = undefined;
+    let kauflandLink = undefined;
+
+    if (firstArticle) {
+      const firstArticleHTML = await page.evaluate(
+        (element) => element.outerHTML,
+        firstArticle,
       );
-      console.log(`Found product name - ${productName}`);
-    } else {
-      console.log("Product name not found");
-    }
+      console.log("First article HTML:", firstArticleHTML);
 
-    // Find and save product price
-    let kauflandPrice: string | null = null;
-    await page.waitForSelector("span.rd-price-information__price");
-    const priceElement = await page.$("span.rd-price-information__price");
-    if (priceElement) {
-      kauflandPrice = await page.evaluate(
-        (element) => element?.textContent,
-        priceElement,
-      );
-      console.log(`Found Kaufland Price - ${kauflandPrice}`);
-    } else {
-      console.log("Product price not found");
-    }
+      // Extract product name
+      try {
+        await firstArticle.waitForSelector("div.product__title");
+        productName = await firstArticle.$eval("div.product__title", (el) =>
+          el.textContent?.trim(),
+        );
+        if (productName) {
+          console.log(`Found product name - ${productName}`);
+        } else {
+          console.log("Product name not found");
+        }
+      } catch (error) {
+        console.log("Error finding product name:", error);
+      }
 
-    // Save the URL
-    const kauflandLink = page.url();
-    console.log("Kaufland link -", kauflandLink);
+      // Extract Kaufland price
+      try {
+        await firstArticle.waitForSelector("div.price");
+        kauflandPrice = await firstArticle.$eval("div.price", (el) =>
+          el.textContent?.trim(),
+        );
+        if (kauflandPrice) {
+          console.log(`Found Kaufland Price - ${kauflandPrice}`);
+        } else {
+          console.log("Product price not found");
+        }
+      } catch (error) {
+        console.log("Error finding product price:", error);
+      }
+
+      // Extract Kaufland link
+      try {
+        await firstArticle.waitForSelector("a.product-link", { timeout: 5000 });
+        try {
+          await firstArticle.waitForSelector("a.product-link", {
+            timeout: 5000,
+          });
+        } catch {
+          console.log(
+            "Initial wait for product link failed, waiting longer...",
+          );
+          await firstArticle.waitForSelector("a.product-link", {
+            timeout: 20000,
+          });
+        }
+        kauflandLink = await firstArticle.$eval(
+          "a.product-link",
+          (el) => `https://kaufland.de${el.getAttribute("href")}`,
+        );
+        if (kauflandLink) {
+          console.log(`Found Kaufland link - ${kauflandLink}`);
+        } else {
+          console.log("Kaufland link not found");
+        }
+      } catch (error) {
+        console.log("Error finding Kaufland link:", error);
+      }
+    } else {
+      console.log('No article found with the class "product".');
+    }
 
     // Close the browser
     await browser.close();
