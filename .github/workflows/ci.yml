@@ -15,12 +15,16 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+        working-directory: ./frontend
 
       - name: Typecheck
         run: npm run typecheck
+        working-directory: ./frontend
 
       - name: Lint
         run: npm run lint
+        working-directory: ./frontend
 
       - name: Print Environment Variable
         run: echo $MY_ENV_VAR
+        working-directory: ./frontend
