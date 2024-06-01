@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "src/app/api/trpc/[trpc]/*": {
+      "maxDuration": 30
+    }
+  }
+}
