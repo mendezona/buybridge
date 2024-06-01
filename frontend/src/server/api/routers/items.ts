@@ -1,4 +1,7 @@
 import { type Item } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { amazonScrapper } from "~/scraper/amazonScrapper/amazonScrapper";
 import { kauflandScrapper } from "~/scraper/kauflandScrapper/kauflandScrapper";
@@ -10,6 +13,12 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { type AmazonProductData } from "../../../scraper/amazonScrapper/amazonScrapper.types";
+
+const rateLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(3, "1m"),
+  analytics: true,
+});
 
 export const itemsRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -25,7 +34,11 @@ export const itemsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.currentUserId as string | null;
+
       if (authorId) {
+        const { success } = await rateLimit.limit(authorId);
+        if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
         const kauflandProductData: KauflandProductData =
           await kauflandScrapper(input);
         if (kauflandProductData.productFound) {
