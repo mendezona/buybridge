@@ -48,19 +48,16 @@ export function NewProductForm() {
           setLoading(false);
           toast({
             title: "You submitted the following values:",
-            description: (
-              <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                <code className="text-white">{data.ean}</code>
-              </pre>
-            ),
+            description:
+              "Successfully added product to database, please refresh the page",
           });
         },
         onError: () => {
           setLoading(false);
           toast({
             title: "Error",
-            description: "There was an error submitting the form.",
-            // status: "error",
+            description:
+              "There was an error finding information about that product on Amazon or Kaufland",
           });
         },
       },

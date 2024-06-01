@@ -41,56 +41,59 @@ export const itemsRouter = createTRPCRouter({
 
         const kauflandProductData: KauflandProductData =
           await kauflandScrapper(input);
-        if (kauflandProductData.productFound) {
-          await ctx.db.item.upsert({
-            where: { ean: input.ean },
-            update: {
-              productName: kauflandProductData.productName,
-              kauflandPrice:
-                kauflandProductData.kauflandPrice &&
-                detectAndConvertPrice(kauflandProductData.kauflandPrice),
-              kauflandLink: kauflandProductData.kauflandLink,
-            },
-            create: {
-              ean: input.ean,
-              productName: kauflandProductData.productName,
-              kauflandPrice:
-                kauflandProductData.kauflandPrice &&
-                detectAndConvertPrice(kauflandProductData.kauflandPrice),
-              kauflandLink: kauflandProductData.kauflandLink,
-            },
-          });
 
-          const amazonProductData: AmazonProductData = await amazonScrapper({
+        if (!kauflandProductData.productFound)
+          throw new TRPCError({ code: "NOT_FOUND" });
+
+        await ctx.db.item.upsert({
+          where: { ean: input.ean },
+          update: {
+            productName: kauflandProductData.productName,
+            kauflandPrice:
+              kauflandProductData.kauflandPrice &&
+              detectAndConvertPrice(kauflandProductData.kauflandPrice),
+            kauflandLink: kauflandProductData.kauflandLink,
+          },
+          create: {
             ean: input.ean,
-          });
-          if (amazonProductData.productFound) {
-            await ctx.db.item.upsert({
-              where: { ean: input.ean },
-              update: {
-                amazonPrice:
-                  amazonProductData.amazonPrice &&
-                  detectAndConvertPrice(amazonProductData.amazonPrice),
-                amazonLink: amazonProductData.amazonLink,
-              },
-              create: {
-                ean: input.ean,
-                kauflandPrice:
-                  amazonProductData.amazonPrice &&
-                  detectAndConvertPrice(amazonProductData.amazonPrice),
-                amazonLink: amazonProductData.amazonLink,
-              },
-            });
-          }
-        }
+            productName: kauflandProductData.productName,
+            kauflandPrice:
+              kauflandProductData.kauflandPrice &&
+              detectAndConvertPrice(kauflandProductData.kauflandPrice),
+            kauflandLink: kauflandProductData.kauflandLink,
+          },
+        });
+
+        const amazonProductData: AmazonProductData = await amazonScrapper({
+          ean: input.ean,
+        });
+        if (!amazonProductData.productFound)
+          throw new TRPCError({ code: "NOT_FOUND" });
+
+        await ctx.db.item.upsert({
+          where: { ean: input.ean },
+          update: {
+            amazonPrice:
+              amazonProductData.amazonPrice &&
+              detectAndConvertPrice(amazonProductData.amazonPrice),
+            amazonLink: amazonProductData.amazonLink,
+          },
+          create: {
+            ean: input.ean,
+            kauflandPrice:
+              amazonProductData.amazonPrice &&
+              detectAndConvertPrice(amazonProductData.amazonPrice),
+            amazonLink: amazonProductData.amazonLink,
+          },
+        });
 
         console.log("Product added to catalogue");
-        return "Product added to catalogue";
+        return;
       }
 
       console.log(
         "An error occured attempting to add this product to the catalogue",
       );
-      return "An error occured attempting to add this product to the catalogue";
+      throw new TRPCError({ code: "NOT_FOUND" });
     }),
 });

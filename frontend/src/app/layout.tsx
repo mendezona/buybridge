@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "~/components/ui/toaster";
 import { cn } from "~/lib/utils";
 import "~/styles/globals.css";
 import { TRPCReactProvider } from "~/trpc/react";
@@ -36,7 +37,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ClerkProvider>
-            <TRPCReactProvider>{children}</TRPCReactProvider>
+            <TRPCReactProvider>
+              {children}
+              <Toaster />
+            </TRPCReactProvider>
           </ClerkProvider>
         </ThemeProvider>
       </body>
