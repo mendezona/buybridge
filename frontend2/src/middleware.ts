@@ -2,6 +2,7 @@ import {
   clerkClient,
   clerkMiddleware,
   createRouteMatcher,
+  type OauthAccessToken,
 } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import {
@@ -13,7 +14,10 @@ const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = auth();
-  if (userId && isProtectedRoute(req)) {
+
+  if (!userId && isProtectedRoute(req)) {
+    return auth().redirectToSignIn();
+  } else if (userId && isProtectedRoute(req)) {
     try {
       const user = await clerkClient.users.getUser(userId);
       if (!user) {
@@ -22,27 +26,25 @@ export default clerkMiddleware(async (auth, req) => {
       }
 
       const provider = "oauth_discord";
-      const response = await clerkClient.users.getUserOauthAccessToken(
-        userId,
-        provider,
-      );
+      const response: OauthAccessToken[] =
+        (await clerkClient.users.getUserOauthAccessToken(
+          userId,
+          provider,
+        )) as unknown as OauthAccessToken[]; // Type in package is wrong
 
       if (!response) {
         console.error("No OAuth access token found for provider", provider);
         throw new Error("No OAuth access token found");
       }
 
-      const discordAccessToken =
-        response?.data[0]?.token ?? "undefinedDiscordAccessToken";
+      const discordAccessToken = response[0]?.token ?? "";
       const guilds = await fetchUserGuilds(discordAccessToken);
       const isUserAuthorised = checkUserIsInAuthorisedServer(
         process.env.DISCORD_DROPSHIPPING_SERVER_ID ?? "undefinedDiscordServer",
         guilds,
       );
 
-      console.log("guilds", guilds);
       console.log("isUserAuthorised", isUserAuthorised);
-
       return isUserAuthorised
         ? NextResponse.next()
         : NextResponse.redirect(new URL("/", req.url));
