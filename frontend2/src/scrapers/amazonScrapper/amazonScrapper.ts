@@ -29,19 +29,21 @@ export async function amazonScrapper({
     const responseData: AmazonProductResponse =
       response.data as AmazonProductResponse;
 
+    const amazonTitle: string | null = responseData.product.title ?? null;
     const amazonPrice: string =
       responseData.product.buybox_winner.price.value.toString() ?? null;
     const amazonLink: string | null = responseData.product.link ?? null;
-    const productFound: boolean = !!amazonPrice || !!amazonLink;
+    const productFound: boolean =
+      !!amazonPrice || !!amazonLink || !!amazonTitle;
 
     if (productFound) {
-      const amazonProduct = {
+      console.log("Amazon product API - product found");
+      return {
         productFound,
+        amazonTitle,
         amazonPrice,
         amazonLink,
       };
-      console.log("Amazon product API - product found", amazonProduct);
-      return amazonProduct;
     } else {
       console.log("Amazon product API - product not found");
       return {

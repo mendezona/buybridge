@@ -10,8 +10,7 @@ import {
   fetchUserGuilds,
 } from "./middleware.helpers";
 
-// const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
-const isProtectedRoute = createRouteMatcher(["/test(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = auth();
@@ -45,7 +44,6 @@ export default clerkMiddleware(async (auth, req) => {
         guilds,
       );
 
-      console.log("isUserAuthorised", isUserAuthorised);
       return isUserAuthorised
         ? NextResponse.next()
         : NextResponse.redirect(new URL("/", req.url));

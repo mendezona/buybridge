@@ -17,6 +17,7 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
+
 export const createTable = pgTableCreator((name) => `buyBridge_${name}`);
 
 export const items = createTable(

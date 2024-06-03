@@ -1,6 +1,6 @@
 export interface AmazonProductData {
   productFound: boolean;
-  ean?: string | null;
+  amazonTitle?: string | null;
   amazonPrice?: string | null;
   amazonLink?: string | null;
 }

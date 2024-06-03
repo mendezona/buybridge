@@ -1,9 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { type ApiReturnedData } from "~/api/api.types";
 import { LoadingSpinner } from "~/components/loadingSpinner";
 import { Button } from "~/components/ui/button";
 import {
@@ -26,7 +28,6 @@ const FormSchema = z.object({
 type FormValues = z.infer<typeof FormSchema>;
 
 export function NewProductForm() {
-  // const { mutate } = api.items.submitNewProductEAN.useMutation();
   const [loading, setLoading] = useState<boolean>(false);
 
   // Use the useForm hook with the resolver and default values
@@ -37,30 +38,53 @@ export function NewProductForm() {
     },
   });
 
-  // Handle form submission
   async function onSubmit(data: FormValues) {
     setLoading(true);
-    // mutate(
-    //   { ean: data.ean },
-    //   {
-    //     onSuccess: () => {
-    //       setLoading(false);
-    //       toast({
-    //         title: "Success! :)",
-    //         description:
-    //           "Successfully added product to database, please refresh the page",
-    //       });
-    //     },
-    //     onError: () => {
-    //       setLoading(false);
-    //       toast({
-    //         title: "Error :(",
-    //         description:
-    //           "There was an error finding information about that product on Amazon or Kaufland",
-    //       });
-    //     },
-    //   },
-    // );
+
+    // TODO: Can disguise this a bit more if playing around with maximum serveless duration parameters?
+
+    const addNewProductToAmazonPromise = axios.post(
+      "/api/addnewproductamazon",
+      {
+        ean: data.ean,
+      },
+    );
+    const addNewProductToKauflandPromise = axios.post(
+      "/api/addnewproductkaufland",
+      {
+        ean: data.ean,
+      },
+    );
+
+    const [amazonResponse, kauflandResponse] = await Promise.all([
+      addNewProductToKauflandPromise,
+      addNewProductToAmazonPromise,
+    ]);
+
+    const amazonData = amazonResponse.data as ApiReturnedData;
+    const kauflandData = kauflandResponse.data as ApiReturnedData;
+
+    if (amazonData.error) {
+      setLoading(false);
+      toast({
+        title: "Error! :(",
+        description: amazonData.error,
+      });
+      return;
+    } else if (kauflandData.error) {
+      setLoading(false);
+      toast({
+        title: "Error! :(",
+        description: kauflandData.error,
+      });
+      return;
+    } else {
+      toast({
+        title: "Success! :)",
+        description:
+          "Successfully added product to database, please refresh the page",
+      });
+    }
   }
 
   return (
