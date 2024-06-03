@@ -74,7 +74,6 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
     },
     cell: ({ row }) => {
       const returnOnInvestment = row.getValue("returnOnInvestment");
-      console.log(row.getValue("returnOnInvestment"));
       const parsedROI = parseFloat(returnOnInvestment as string);
       return (
         <div
