@@ -1,9 +1,9 @@
 import { PersonIcon, StarIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { DiscordLoginButton } from "./_components/discordLoginButton";
-import { EmailSignUpButton } from "./_components/emailSignUpButton";
+// import { EmailSignUpButton } from "./_components/emailSignUpButton";
 
-export default async function Home() {
+export default function HomePage() {
   return (
     <main className="flex-1">
       <section className="h-full w-full bg-gradient-to-b from-[#F9FAFB] to-white pt-12 dark:from-gray-950 dark:to-gray-900 md:pt-24 lg:pt-32">

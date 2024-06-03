@@ -1,14 +1,7 @@
 {
-  "version": 2,
   "functions": {
-    "api/trpc/[trpc]": {
+    "src/pages/api/*": {
       "maxDuration": 30
     }
-  },
-  "routes": [
-    {
-      "src": "/api/trpc/(.*)",
-      "dest": "/api/trpc/[trpc]"
-    }
-  ]
+  }
 }

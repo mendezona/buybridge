@@ -1,5 +1,5 @@
 import { EnvelopeOpenIcon } from "@radix-ui/react-icons";
-import { Button } from "~/components/ui/button";
+import { Button } from "../../components/ui/button";
 
 export function EmailSignUpButton() {
   return (

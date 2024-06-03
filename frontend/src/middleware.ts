@@ -2,6 +2,7 @@ import {
   clerkClient,
   clerkMiddleware,
   createRouteMatcher,
+  type OauthAccessToken,
 } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import {
@@ -25,18 +26,18 @@ export default clerkMiddleware(async (auth, req) => {
       }
 
       const provider = "oauth_discord";
-      const response = await clerkClient.users.getUserOauthAccessToken(
-        userId,
-        provider,
-      );
+      const response: OauthAccessToken[] =
+        (await clerkClient.users.getUserOauthAccessToken(
+          userId,
+          provider,
+        )) as unknown as OauthAccessToken[]; // Type in package is wrong
 
       if (!response) {
         console.error("No OAuth access token found for provider", provider);
         throw new Error("No OAuth access token found");
       }
 
-      const discordAccessToken =
-        response?.data[0]?.token ?? "undefinedDiscordAccessToken";
+      const discordAccessToken = response[0]?.token ?? "";
       const guilds = await fetchUserGuilds(discordAccessToken);
       const isUserAuthorised = checkUserIsInAuthorisedServer(
         process.env.DISCORD_DROPSHIPPING_SERVER_ID ?? "undefinedDiscordServer",
@@ -54,5 +55,5 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
