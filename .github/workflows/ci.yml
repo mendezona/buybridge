@@ -24,6 +24,8 @@ env:
   UPSTASH_REDIS_REST_TOKEN: "takeToken"
   NEXT_PUBLIC_POSTHOG_KEY: "fakeKey"
   NEXT_PUBLIC_POSTHOG_HOST: "https://fake.com"
+  SENTRY_DSN: "https://fake.com"
+  SENTRY_AUTH_TOKEN: "fakeToken"
 
 jobs:
   build:
