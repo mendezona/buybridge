@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -28,6 +29,7 @@ const FormSchema = z.object({
 type FormValues = z.infer<typeof FormSchema>;
 
 export function NewProductForm() {
+  const posthog = usePostHog();
   const [loading, setLoading] = useState<boolean>(false);
 
   // Use the useForm hook with the resolver and default values
@@ -39,6 +41,7 @@ export function NewProductForm() {
   });
 
   async function onSubmit(data: FormValues) {
+    posthog.capture("new_product_ean_submitted");
     setLoading(true);
 
     // TODO: Can disguise this a bit more if playing around with maximum serveless duration parameters?
