@@ -44,7 +44,7 @@ export function NewProductForm() {
     posthog.capture("new_product_ean_submitted");
     setLoading(true);
 
-    // TODO: Can disguise this a bit more if playing around with maximum serveless duration parameters?
+    // TODO: Can disguise this a bit more if playing around with maximum serveless duration parameters? (e.g. by using a different API)
 
     const addNewProductToAmazonPromise = axios.post(
       "/api/addnewproductamazon",
@@ -52,6 +52,7 @@ export function NewProductForm() {
         ean: data.ean,
       },
     );
+
     const addNewProductToKauflandPromise = axios.post(
       "/api/addnewproductkaufland",
       {
@@ -59,33 +60,53 @@ export function NewProductForm() {
       },
     );
 
-    const [amazonResponse, kauflandResponse] = await Promise.all([
-      addNewProductToKauflandPromise,
-      addNewProductToAmazonPromise,
-    ]);
+    try {
+      const [amazonResponse, kauflandResponse] = await Promise.allSettled([
+        addNewProductToAmazonPromise,
+        addNewProductToKauflandPromise,
+      ]);
 
-    const amazonData = amazonResponse.data as ApiReturnedData;
-    const kauflandData = kauflandResponse.data as ApiReturnedData;
+      setLoading(false);
 
-    if (amazonData.error) {
+      const errors: string[] = [];
+
+      if (amazonResponse.status === "rejected") {
+        errors.push("Error with Amazon API: " + amazonResponse.reason);
+      } else {
+        const amazonData = amazonResponse.value.data as ApiReturnedData;
+        if (amazonData.error) {
+          errors.push("Amazon API Error: " + amazonData.error);
+        }
+      }
+
+      if (kauflandResponse.status === "rejected") {
+        errors.push("Error with Kaufland API: " + kauflandResponse.reason);
+      } else {
+        const kauflandData = kauflandResponse.value.data as ApiReturnedData;
+        if (kauflandData.error) {
+          errors.push("Kaufland API Error: " + kauflandData.error);
+        }
+      }
+
+      if (errors.length > 0) {
+        toast({
+          title: "Error! :(",
+          description: errors.join("; "),
+        });
+      } else {
+        toast({
+          title: "Success! :)",
+          description:
+            "Successfully added product to database, please refresh the page",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
       toast({
         title: "Error! :(",
-        description: amazonData.error,
-      });
-    } else if (kauflandData.error) {
-      toast({
-        title: "Error! :(",
-        description: kauflandData.error,
-      });
-    } else {
-      toast({
-        title: "Success! :)",
-        description:
-          "Successfully added product to database, please refresh the page",
+        description: error as string,
       });
     }
-
-    setLoading(false);
   }
 
   return (
