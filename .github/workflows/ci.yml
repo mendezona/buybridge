@@ -4,6 +4,24 @@ on: [push, pull_request]
 
 env:
   DATABASE_URL: "https://fake.com"
+  POSTGRES_URL: "https://fake.com"
+  POSTGRES_PRISMA_URL: "https://fake.com"
+  POSTGRES_URL_NO_SSL: "https://fake.com"
+  POSTGRES_URL_NON_POOLING: "https://fake.com"
+  POSTGRES_USER: "default"
+  POSTGRES_HOST: "host"
+  POSTGRES_PASSWORD: "password"
+  POSTGRES_DATABASE: "database"
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fakeKey"
+  CLERK_SECRET_KEY: "fakeKey"
+  DISCORD_DROPSHIPPING_SERVER_ID: "fakeID"
+  BRIGHT_DATA_USERNAME: "username"
+  BRIGHT_DATA_PASSWORD: "password"
+  BRIGHT_DATA_COUNTRY: "country"
+  ASIN_DATA_API_KEY: "fakeKey"
+  ASIN_DATA_API_COUNTRY: "country"
+  UPSTASH_REDIS_REST_URL: "https://fake.com"
+  UPSTASH_REDIS_REST_TOKEN: "takeToken"
 
 jobs:
   build:
