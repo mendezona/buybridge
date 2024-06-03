@@ -3,6 +3,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { convertDecimalToPercentage } from "./comparisonTable.helpers";
 import { type ComparisonTableItem } from "./comparisonTable.types";
 
 export const columns: ColumnDef<ComparisonTableItem>[] = [
@@ -75,13 +76,11 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
       const returnOnInvestment = row.getValue("returnOnInvestment");
       console.log(row.getValue("returnOnInvestment"));
       const parsedROI = parseFloat(returnOnInvestment as string);
-      console.log(parsedROI);
-
       return (
         <div
           className={`font-medium ${parsedROI > 0 ? "text-green-600" : "text-red-600"}`}
         >
-          {row.getValue("returnOnInvestment")}
+          {convertDecimalToPercentage(row.getValue("returnOnInvestment"))}
         </div>
       );
     },
