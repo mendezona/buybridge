@@ -26,6 +26,8 @@ env:
   NEXT_PUBLIC_POSTHOG_HOST: "https://fake.com"
   SENTRY_DSN: "https://fake.com"
   SENTRY_AUTH_TOKEN: "fakeToken"
+  SENTRY_ORG: "organistaion"
+  SENTRY_PROJECT: "project"
 
 jobs:
   build:
