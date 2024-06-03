@@ -22,6 +22,8 @@ env:
   ASIN_DATA_API_COUNTRY: "country"
   UPSTASH_REDIS_REST_URL: "https://fake.com"
   UPSTASH_REDIS_REST_TOKEN: "takeToken"
+  NEXT_PUBLIC_POSTHOG_KEY: "fakeKey"
+  NEXT_PUBLIC_POSTHOG_HOST: "https://fake.com"
 
 jobs:
   build:

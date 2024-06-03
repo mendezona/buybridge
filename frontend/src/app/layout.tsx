@@ -6,6 +6,7 @@ import { figtree } from "~/components/fonts";
 import { Toaster } from "~/components/ui/toaster";
 import { cn } from "~/lib/utils";
 import "~/styles/globals.css";
+import { CSPostHogProvider } from "./_analytics/provider";
 
 export const metadata: Metadata = {
   title: {
@@ -22,17 +23,19 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${GeistSans.variable}`}>
-        <body
-          className={cn(
-            "min-h-screen font-sans antialiased dark:bg-black",
-            figtree.variable,
-          )}
-        >
-          {children}
-          <Toaster />
-        </body>
-      </html>
+      <CSPostHogProvider>
+        <html lang="en" className={`${GeistSans.variable}`}>
+          <body
+            className={cn(
+              "min-h-screen font-sans antialiased dark:bg-black",
+              figtree.variable,
+            )}
+          >
+            {children}
+            <Toaster />
+          </body>
+        </html>
+      </CSPostHogProvider>
     </ClerkProvider>
   );
 }

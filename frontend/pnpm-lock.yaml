@@ -80,6 +80,9 @@ dependencies:
   postgres:
     specifier: ^3.4.4
     version: 3.4.4
+  posthog-js:
+    specifier: ^1.136.4
+    version: 1.136.4
   puppeteer-core:
     specifier: ^22.10.0
     version: 22.10.0
@@ -4729,6 +4732,10 @@ packages:
       pend: 1.2.0
     dev: false
 
+  /fflate@0.4.8:
+    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
+    dev: false
+
   /file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
@@ -6064,6 +6071,17 @@ packages:
   /postgres@3.4.4:
     resolution: {integrity: sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A==}
     engines: {node: '>=12'}
+    dev: false
+
+  /posthog-js@1.136.4:
+    resolution: {integrity: sha512-/WHf6voMtT/jTO9W2AX5GSjdSIdAlrbN6Kp+PwQBfaMOrFuT3aAtCS2Fikh8uBdP8eLXk+wMjw3/3gfzo+TDaA==}
+    dependencies:
+      fflate: 0.4.8
+      preact: 10.22.0
+    dev: false
+
+  /preact@10.22.0:
+    resolution: {integrity: sha512-RRurnSjJPj4rp5K6XoP45Ui33ncb7e4H7WiOHVpjbkvqvA3U+N8Z6Qbo0AE6leGYBV66n8EhEaFixvIu3SkxFw==}
     dev: false
 
   /prelude-ls@1.2.1:
