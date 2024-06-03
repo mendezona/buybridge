@@ -65,19 +65,15 @@ export function NewProductForm() {
     const kauflandData = kauflandResponse.data as ApiReturnedData;
 
     if (amazonData.error) {
-      setLoading(false);
       toast({
         title: "Error! :(",
         description: amazonData.error,
       });
-      return;
     } else if (kauflandData.error) {
-      setLoading(false);
       toast({
         title: "Error! :(",
         description: kauflandData.error,
       });
-      return;
     } else {
       toast({
         title: "Success! :)",
@@ -85,6 +81,8 @@ export function NewProductForm() {
           "Successfully added product to database, please refresh the page",
       });
     }
+
+    setLoading(false);
   }
 
   return (
