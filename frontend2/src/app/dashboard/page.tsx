@@ -47,8 +47,7 @@ import { ComparisonTable } from "./_components/comparisonTable/comparisonTable";
 import { columns } from "./_components/comparisonTable/comparisonTable.constants";
 import { convertToPlainObjects } from "./_components/comparisonTable/comparisonTable.helpers";
 import { type ComparisonTableItem } from "./_components/comparisonTable/comparisonTable.types";
-
-// import { NewProductForm } from "../_components/newProductForm";
+import { NewProductForm } from "./_components/newProductForm";
 
 export default async function Dashboard() {
   const comparisonTableData = await getAllItemsOrderedByProfit();
@@ -168,7 +167,7 @@ export default async function Dashboard() {
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
           <Card className="p-4 sm:col-span-2 " x-chunk="dashboard-05-chunk-0">
-            {/* <NewProductForm /> */}
+            <NewProductForm />
           </Card>
         </div>
         <Tabs defaultValue="all">
