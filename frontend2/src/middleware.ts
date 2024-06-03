@@ -10,7 +10,8 @@ import {
   fetchUserGuilds,
 } from "./middleware.helpers";
 
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
+// const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/test(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = auth();
