@@ -1,10 +1,11 @@
+import * as Sentry from "@sentry/nextjs";
 import axios from "axios";
 import {
   type AmazonProductData,
   type AmazonProductResponse,
-} from "./amazonScrapper.types";
+} from "./amazonApi.types";
 
-export async function amazonScrapper({
+export async function amazonApi({
   ean,
 }: {
   ean: string;
@@ -51,8 +52,10 @@ export async function amazonScrapper({
       };
     }
   } catch (error) {
+    Sentry.captureException(error);
     console.log("Amazon product API - error occurred");
-    console.log(error);
+    console.error(error);
+
     return {
       productFound: false,
     };

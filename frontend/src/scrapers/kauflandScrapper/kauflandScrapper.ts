@@ -1,5 +1,7 @@
+import * as Sentry from "@sentry/nextjs";
 import puppeteer from "puppeteer-core";
 import { waitForJavascriptToLoad } from "../scrappers.helpers";
+import { extractKauflandProductId } from "./kauflandScrapper.helpers";
 import { type KauflandProductData } from "./kauflandScrapper.types";
 
 export async function kauflandScrapper({
@@ -124,6 +126,7 @@ export async function kauflandScrapper({
         productName: productName,
         kauflandPrice: kauflandPrice,
         kauflandLink: kauflandLink,
+        kauflandProductId: extractKauflandProductId(kauflandLink ?? ""),
       };
       console.log("Returned Kaufland Product Data object", kauflandProductData);
       return kauflandProductData;
@@ -134,6 +137,7 @@ export async function kauflandScrapper({
       };
     }
   } catch (error) {
+    Sentry.captureException(error);
     console.error(
       "Kaufland Product Data not found - An error occurred:",
       error,

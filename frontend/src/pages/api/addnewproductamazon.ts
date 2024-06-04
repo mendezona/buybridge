@@ -1,9 +1,10 @@
 import { getAuth } from "@clerk/nextjs/server";
+import * as Sentry from "@sentry/nextjs";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { amazonScrapper } from "~/scrapers/amazonScrapper/amazonScrapper";
-import { type AmazonProductData } from "~/scrapers/amazonScrapper/amazonScrapper.types";
+import { amazonApi } from "~/scrapers/amazonApi/amazonApi";
+import { type AmazonProductData } from "~/scrapers/amazonApi/amazonApi.types";
 import { saveNewAmazonItem, updateProfitAndROI } from "~/server/queries";
 import { type ApiReturnedData } from "../../api/api.types";
 
@@ -34,32 +35,33 @@ export default async function handler(
     }
 
     const { success } = await rateLimit.limit(userId);
-    if (!success) throw new Error("Too many requests");
+    if (!success) {
+      throw new Error("Too many requests");
+    }
 
     if (!ean || typeof ean !== "string") {
       return res.status(400).json({
-        message: "EAN is required and should be a string",
-        data: null,
+        error: "EAN is required and should be a string",
       });
     }
 
-    const amazonProductData: AmazonProductData = await amazonScrapper({
-      ean,
-    });
-    if (!amazonProductData.productFound)
-      throw new Error("Amazon product not found");
+    const amazonProductData: AmazonProductData = await amazonApi({ ean });
+    if (!amazonProductData.productFound) {
+      return res.status(400).json({ error: "Amazon product not found" });
+    }
 
     await saveNewAmazonItem(ean, amazonProductData);
     await updateProfitAndROI(ean);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: `Product with ${ean} successfully added to the product list`,
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error(error);
-    res.status(500).json({
-      message: `There was an error adding the product ${ean} to the product list`,
-      data: null,
+
+    return res.status(500).json({
+      error: `There was an error adding the product ${ean} to the product list`,
     });
   }
 }

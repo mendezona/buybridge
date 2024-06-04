@@ -1,4 +1,5 @@
 import { getAuth } from "@clerk/nextjs/server";
+import * as Sentry from "@sentry/nextjs";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -38,8 +39,7 @@ export default async function handler(
 
     if (!ean || typeof ean !== "string") {
       return res.status(400).json({
-        message: "EAN is required and should be a string",
-        data: null,
+        error: "EAN is required and should be a string",
       });
     }
 
@@ -47,19 +47,21 @@ export default async function handler(
       ean,
     });
     if (!kauflandProductData.productFound) {
-      throw new Error("Kaufland product not found");
+      return res.status(400).json({ error: "Kaufland product not found" });
     }
 
     await saveNewKauflandItem(ean, kauflandProductData);
     await updateProfitAndROI(ean);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: `Product with ${ean} successfully added to the product list`,
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error(error);
-    res.status(500).json({
-      message: `There was an error adding the product ${ean} to the product list`,
+
+    return res.status(500).json({
+      error: `There was an error adding the product ${ean} to the product list`,
       data: null,
     });
   }
