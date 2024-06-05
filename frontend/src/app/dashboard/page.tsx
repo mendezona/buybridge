@@ -43,15 +43,19 @@ import { Input } from "~/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { getAllItemsOrderedByProfit } from "~/server/queries";
-import { ComparisonTable } from "./_components/comparisonTable/comparisonTable";
-import { columns } from "./_components/comparisonTable/comparisonTable.constants";
+// import { ComparisonTable } from "./_components/comparisonTable/comparisonTable";
+// import { columns } from "./_components/comparisonTable/comparisonTable.constants";
+import { AllDataTable } from "./_components/allDataTable.tsx/allDataTable";
+import { allDataTableColumns } from "./_components/allDataTable.tsx/allDataTable.constants";
 import { convertToPlainObjects } from "./_components/comparisonTable/comparisonTable.helpers";
 import { type ComparisonTableItem } from "./_components/comparisonTable/comparisonTable.types";
 import { NewProductForm } from "./_components/newProductForm";
 
 export default async function Dashboard() {
   const comparisonTableData = await getAllItemsOrderedByProfit();
-  const convertedData: ComparisonTableItem[] =
+  // const convertedData: ComparisonTableItem[] =
+  //   convertToPlainObjects(comparisonTableData);
+  const convertedDataAllTable: ComparisonTableItem[] =
     convertToPlainObjects(comparisonTableData);
 
   return (
@@ -164,14 +168,14 @@ export default async function Dashboard() {
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
-      <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+      <main className="grid max-w-full flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+        <div className="grid max-w-full gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
           <Card className="p-4 sm:col-span-2 " x-chunk="dashboard-05-chunk-0">
             <NewProductForm />
           </Card>
         </div>
-        <Tabs defaultValue="all">
-          <div className="flex items-center">
+        <Tabs className="max-w-full" defaultValue="all">
+          <div className="flex max-w-full items-center">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="active">Active</TabsTrigger>
@@ -217,15 +221,19 @@ export default async function Dashboard() {
               </div> */}
           </div>
           <TabsContent value="all">
-            <Card x-chunk="dashboard-06-chunk-0">
+            <Card x-chunk="dashboard-06-chunk-0 w-full overflow-x-auto">
               <CardHeader>
                 <CardTitle>Products</CardTitle>
                 <CardDescription>
                   Manage your products and view their sales performance.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ComparisonTable columns={columns} data={convertedData} />
+              <CardContent className="m-0">
+                <AllDataTable
+                  columns={allDataTableColumns}
+                  data={convertedDataAllTable}
+                />
+                {/* <ComparisonTable columns={columns} data={convertedData} /> */}
               </CardContent>
             </Card>
           </TabsContent>
