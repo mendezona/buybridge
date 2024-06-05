@@ -55,6 +55,17 @@ export const items = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull()
       .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
+    kauflandProductId: varchar("kauflandProductId", { length: 256 }),
+    kauflandVat: decimal("kauflandVat", { precision: 10, scale: 2 }),
+    kauflandVariableFee: decimal("kauflandVariableFee", {
+      precision: 10,
+      scale: 2,
+    }),
+    kauflandFixedFee: decimal("kauflandFixedFee", { precision: 10, scale: 2 }),
+    kauflandShippingRate: decimal("kauflandShippingRate", {
+      precision: 10,
+      scale: 2,
+    }),
   },
   (item) => ({
     eanIndex: index("ean_idx").on(item.ean),

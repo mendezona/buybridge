@@ -45,6 +45,10 @@ export async function saveNewKauflandItem(
             kauflandProductData.kauflandPrice &&
             detectAndConvertPrice(kauflandProductData.kauflandPrice),
           kauflandLink: kauflandProductData.kauflandLink,
+          kauflandVat: kauflandProductData.kauflandVat,
+          kauflandVariableFee: kauflandProductData.kauflandVariableFee,
+          kauflandFixedFee: kauflandProductData.kauflandFixedFee,
+          kauflandShippingRate: kauflandProductData.kauflandShippingRate,
           updatedAt: sql`CURRENT_TIMESTAMP`,
         })
         .where(eq(items.ean, ean));
@@ -57,6 +61,10 @@ export async function saveNewKauflandItem(
           kauflandProductData.kauflandPrice &&
           detectAndConvertPrice(kauflandProductData.kauflandPrice),
         kauflandLink: kauflandProductData.kauflandLink,
+        kauflandVat: kauflandProductData.kauflandVat,
+        kauflandVariableFee: kauflandProductData.kauflandVariableFee,
+        kauflandFixedFee: kauflandProductData.kauflandFixedFee,
+        kauflandShippingRate: kauflandProductData.kauflandShippingRate,
         updatedAt: sql`CURRENT_TIMESTAMP`,
         createdAt: sql`CURRENT_TIMESTAMP`,
       });

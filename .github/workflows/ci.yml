@@ -28,6 +28,8 @@ env:
   SENTRY_AUTH_TOKEN: "fakeToken"
   SENTRY_ORG: "organistaion"
   SENTRY_PROJECT: "project"
+  KAUFLAND_SELLER_CLIENT_KEY: "fakeKey"
+  KAUFLAND_SELLER_SECRET_KEY: "fakeKey"
 
 jobs:
   build:

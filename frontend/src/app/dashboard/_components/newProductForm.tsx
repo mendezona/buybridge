@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,7 +28,6 @@ const FormSchema = z.object({
 type FormValues = z.infer<typeof FormSchema>;
 
 export function NewProductForm() {
-  const posthog = usePostHog();
   const [loading, setLoading] = useState<boolean>(false);
 
   // Use the useForm hook with the resolver and default values
@@ -41,34 +39,30 @@ export function NewProductForm() {
   });
 
   async function onSubmit(data: FormValues) {
-    posthog.capture("new_product_ean_submitted");
     setLoading(true);
 
     // TODO: Can disguise this a bit more if playing around with maximum serveless duration parameters? (e.g. by using a different API)
-
-    const addNewProductToAmazonPromise = axios.post(
-      "/api/addnewproductamazon",
-      {
-        ean: data.ean,
-      },
-    );
-
-    const addNewProductToKauflandPromise = axios.post(
-      "/api/addnewproductkaufland",
-      {
-        ean: data.ean,
-      },
-    );
-
     try {
+      const errors: string[] = [];
+
+      const addNewProductToAmazonPromise = axios.post(
+        "/api/addnewproductamazon",
+        {
+          ean: data.ean,
+        },
+      );
+
+      const addNewProductToKauflandPromise = axios.post(
+        "/api/addnewproductkaufland",
+        {
+          ean: data.ean,
+        },
+      );
+
       const [amazonResponse, kauflandResponse] = await Promise.allSettled([
         addNewProductToAmazonPromise,
         addNewProductToKauflandPromise,
       ]);
-
-      setLoading(false);
-
-      const errors: string[] = [];
 
       if (amazonResponse.status === "rejected") {
         errors.push("Error with Amazon API: " + amazonResponse.reason);
@@ -88,6 +82,17 @@ export function NewProductForm() {
         }
       }
 
+      const verifykauflandproductdata = await axios.post(
+        "/api/verifykauflandproductdata",
+        {
+          ean: data.ean,
+        },
+      );
+      if (verifykauflandproductdata.status !== 200) {
+        errors.push("Error verifying Kaufland product data");
+      }
+
+      setLoading(false);
       if (errors.length > 0) {
         toast({
           title: "Error! :(",
