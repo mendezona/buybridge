@@ -3,7 +3,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { convertDecimalToPercentage } from "./comparisonTable.helpers";
+import {
+  convertDecimalToPercentage,
+  convertToPercentageDEFormat,
+} from "./comparisonTable.helpers";
 import { type ComparisonTableItem } from "./comparisonTable.types";
 
 export const columns: ColumnDef<ComparisonTableItem>[] = [
@@ -46,9 +49,9 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
     },
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("profit"));
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("de-DE", {
         style: "currency",
-        currency: "USD",
+        currency: "EUR",
       }).format(amount);
 
       return amount > 0 ? (
@@ -79,7 +82,11 @@ export const columns: ColumnDef<ComparisonTableItem>[] = [
         <div
           className={`font-medium ${parsedROI > 0 ? "text-green-600" : "text-red-600"}`}
         >
-          {convertDecimalToPercentage(row.getValue("returnOnInvestment"))}
+          {convertToPercentageDEFormat(
+            parseFloat(
+              convertDecimalToPercentage(row.getValue("returnOnInvestment")),
+            ),
+          )}
         </div>
       );
     },

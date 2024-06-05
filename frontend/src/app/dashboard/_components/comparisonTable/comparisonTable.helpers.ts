@@ -37,3 +37,13 @@ export function convertToPlainObjects(
 export function convertDecimalToPercentage(decimal: number): string {
   return `${(decimal * 100).toFixed(2)}%`;
 }
+
+export function convertToPercentageDEFormat(num: number): string {
+  const formatted = new Intl.NumberFormat("de-DE", {
+    style: "percent",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(num / 100);
+
+  return formatted;
+}
