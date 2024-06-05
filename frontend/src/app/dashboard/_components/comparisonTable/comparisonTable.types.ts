@@ -11,6 +11,12 @@ export interface ComparisonTableItem {
   productName?: string | null;
   profit?: string | null;
   returnOnInvestment?: string | null;
+  amazonPrice?: string | null;
+  kauflandPrice?: string | null;
+  kauflandVAT?: string | null;
+  kauflandVariableFee?: string | null;
+  kauflandFixedFee?: string | null;
+  kauflandShippingRate?: string | null;
   kauflandLink?: string | null;
   amazonLink?: string | null;
   updatedAt: string;
