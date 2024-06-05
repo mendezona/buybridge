@@ -46,3 +46,7 @@ export const waitForJavascriptToLoad = async (
   }
   throw new Error("Timeout waiting for Javascript to load");
 };
+
+export function formatToTwoDecimalPlaces(num: number): string {
+  return num.toFixed(2);
+}

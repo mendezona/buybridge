@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { kauflandApiGetProductData } from "~/scrapers/kauflandApi/kauflandApi";
 import { type ProductResponse } from "~/scrapers/kauflandApi/kauflandApi.types";
 import { type KauflandProductData } from "~/scrapers/kauflandScrapper/kauflandScrapper.types";
+import { formatToTwoDecimalPlaces } from "~/scrapers/scrappers.helpers";
 import { saveNewKauflandItem, updateProfitAndROI } from "~/server/queries";
 import { type ApiReturnedData } from "../../api/api.types";
 
@@ -72,7 +73,9 @@ export default async function handler(
     if (officialKauflandProductData.units) {
       const units = Object.values(officialKauflandProductData.units);
       if (units.length > 0) {
-        kauflandPrice = units[0]?.price?.toString() ?? null;
+        kauflandPrice = units[0]?.price
+          ? formatToTwoDecimalPlaces(units[0]?.price).toString()
+          : null;
         kauflandShippingRate = units[0]?.shipping_rate?.toString() ?? null;
       }
     }
@@ -87,8 +90,6 @@ export default async function handler(
       kauflandFixedFee,
       kauflandShippingRate,
     };
-
-    console.log("Kaufland product data:", productData);
 
     try {
       await saveNewKauflandItem(ean, productData);
