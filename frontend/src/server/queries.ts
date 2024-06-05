@@ -41,9 +41,7 @@ export async function saveNewKauflandItem(
         .set({
           productName: kauflandProductData.productName,
           kauflandProductId: kauflandProductData.kauflandProductId,
-          kauflandPrice:
-            kauflandProductData.kauflandPrice &&
-            detectAndConvertPrice(kauflandProductData.kauflandPrice),
+          kauflandPrice: kauflandProductData.kauflandPrice,
           kauflandLink: kauflandProductData.kauflandLink,
           kauflandVat: kauflandProductData.kauflandVat,
           kauflandVariableFee: kauflandProductData.kauflandVariableFee,
@@ -57,9 +55,7 @@ export async function saveNewKauflandItem(
         ean,
         productName: kauflandProductData.productName,
         kauflandProductId: kauflandProductData.kauflandProductId,
-        kauflandPrice:
-          kauflandProductData.kauflandPrice &&
-          detectAndConvertPrice(kauflandProductData.kauflandPrice),
+        kauflandPrice: kauflandProductData.kauflandPrice,
         kauflandLink: kauflandProductData.kauflandLink,
         kauflandVat: kauflandProductData.kauflandVat,
         kauflandVariableFee: kauflandProductData.kauflandVariableFee,
@@ -70,7 +66,10 @@ export async function saveNewKauflandItem(
       });
     }
 
-    console.log("Kaufland product information added successfully");
+    console.log(
+      "Kaufland product information added successfully",
+      kauflandProductData,
+    );
   } catch (error) {
     Sentry.captureException(error);
     throw error;

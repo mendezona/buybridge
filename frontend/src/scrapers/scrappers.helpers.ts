@@ -48,5 +48,6 @@ export const waitForJavascriptToLoad = async (
 };
 
 export function formatToTwoDecimalPlaces(num: number): string {
-  return num.toFixed(2);
+  const formattedNumber = (num / 100).toFixed(2);
+  return formattedNumber;
 }

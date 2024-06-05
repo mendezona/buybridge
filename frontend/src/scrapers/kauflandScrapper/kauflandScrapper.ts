@@ -45,7 +45,6 @@ export async function kauflandScrapper({
     const firstArticle = await page.$("article.product");
 
     let productName = undefined;
-    let kauflandPrice = undefined;
     let kauflandLink = undefined;
 
     if (firstArticle) {
@@ -68,21 +67,6 @@ export async function kauflandScrapper({
         }
       } catch (error) {
         console.log("Error finding product name:", error);
-      }
-
-      // Extract Kaufland price
-      try {
-        await firstArticle.waitForSelector("div.price");
-        kauflandPrice = await firstArticle.$eval("div.price", (el) =>
-          el.textContent?.trim(),
-        );
-        if (kauflandPrice) {
-          console.log(`Found Kaufland Price - ${kauflandPrice}`);
-        } else {
-          console.log("Product price not found");
-        }
-      } catch (error) {
-        console.log("Error finding product price:", error);
       }
 
       // Extract Kaufland link
@@ -119,12 +103,11 @@ export async function kauflandScrapper({
     // Close the browser
     await browser.close();
 
-    const productFound = !!productName || !!kauflandPrice;
+    const productFound = !!productName || !!kauflandLink;
     if (productFound) {
       const kauflandProductData: KauflandProductData = {
         productFound: productFound,
         productName: productName,
-        kauflandPrice: kauflandPrice,
         kauflandLink: kauflandLink,
         kauflandProductId: extractKauflandProductId(kauflandLink ?? ""),
       };
