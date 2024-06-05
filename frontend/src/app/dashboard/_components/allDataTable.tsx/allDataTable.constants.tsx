@@ -99,7 +99,31 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("profit"));
+      const amount = parseFloat(row.getValue("amazonPrice"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+
+      return <div>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "kauflandPrice",
+    header: ({ column }) => {
+      return (
+        <Button
+          style={{ padding: 0 }}
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Kaufland Price
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("kauflandPrice"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -123,7 +147,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("profit"));
+      const amount = parseFloat(row.getValue("kauflandVAT"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -147,7 +171,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("profit"));
+      const amount = parseFloat(row.getValue("kauflandVariableFee"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -171,7 +195,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("profit"));
+      const amount = parseFloat(row.getValue("kauflandFixedFee"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -195,7 +219,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("profit"));
+      const amount = parseFloat(row.getValue("kauflandShippingRate"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
