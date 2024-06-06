@@ -1,7 +1,7 @@
 import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, isNotNull, sql } from "drizzle-orm";
 import { type AmazonProductData } from "~/scrapers/amazonApi/amazonApi.types";
 import { type KauflandProductData } from "~/scrapers/kauflandScrapper/kauflandScrapper.types";
 import { detectAndConvertPrice } from "~/scrapers/scrappers.helpers";
@@ -11,7 +11,11 @@ import { convertToDecimal } from "./queries.helpers";
 import { type Item } from "./queries.types";
 
 export async function getAllItemsOrderedByProfit(): Promise<Item[]> {
-  const dbItems = await db.select().from(items).orderBy(desc(items.profit));
+  const dbItems = await db
+    .select()
+    .from(items)
+    .where(isNotNull(items.profit))
+    .orderBy(desc(items.profit));
   return dbItems;
 }
 
