@@ -48,7 +48,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("profit")) ?? 0;
+      const amount = parseFloat(row.getValue("profit") ?? "0");
       const formatted = new Intl.NumberFormat("de-DE", {
         style: "currency",
         currency: "EUR",
@@ -106,7 +106,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amazonPrice")) ?? 0;
+      const amount = parseFloat(row.getValue("amazonPrice") ?? "0");
       const formatted = new Intl.NumberFormat("de-DE", {
         style: "currency",
         currency: "EUR",
@@ -130,7 +130,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("kauflandPrice")) ?? 0;
+      const amount = parseFloat(row.getValue("kauflandPrice") ?? "0");
       const formatted = new Intl.NumberFormat("de-DE", {
         style: "currency",
         currency: "EUR",
@@ -174,13 +174,11 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("kauflandVariableFee")) ?? 0;
-      const formatted = new Intl.NumberFormat("de-DE", {
-        style: "currency",
-        currency: "EUR",
-      }).format(amount);
-
-      return <div>{formatted}</div>;
+      return (
+        <div>
+          {convertToPercentageDEFormat(row.getValue("kauflandVariableFee"))}
+        </div>
+      );
     },
   },
   {
@@ -198,13 +196,9 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("kauflandFixedFee")) ?? 0;
-      const formatted = new Intl.NumberFormat("de-DE", {
-        style: "currency",
-        currency: "EUR",
-      }).format(amount);
-
-      return <div>{formatted}</div>;
+      <div>
+        {convertToPercentageDEFormat(row.getValue("kauflandFixedFee"))}
+      </div>;
     },
   },
   {
@@ -216,13 +210,13 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Kaufland VAT
+          Kaufland Shipping Fee
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("kauflandShippingRate")) ?? 0;
+      const amount = parseFloat(row.getValue("kauflandShippingRate") ?? "0");
       const formatted = new Intl.NumberFormat("de-DE", {
         style: "currency",
         currency: "EUR",

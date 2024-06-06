@@ -7,6 +7,7 @@ import { type KauflandProductData } from "~/scrapers/kauflandScrapper/kauflandSc
 import { detectAndConvertPrice } from "~/scrapers/scrappers.helpers";
 import { db } from "./db";
 import { items } from "./db/schema";
+import { convertToDecimal } from "./queries.helpers";
 import { type Item } from "./queries.types";
 
 export async function getAllItemsOrderedByProfit(): Promise<Item[]> {
@@ -124,11 +125,31 @@ export async function updateProfitAndROI(ean: string): Promise<void> {
       .from(items)
       .where(eq(items.ean, ean));
     if (existingItem.length > 0) {
+      const kauflandPriceAsNumber = parseFloat(
+        existingItem[0]?.kauflandPrice ?? "0",
+      );
+      const kauflandVATReduction =
+        kauflandPriceAsNumber *
+        convertToDecimal(parseInt(existingItem[0]?.kauflandVat ?? "0"));
+      const kauflandCategoryFeeReduction =
+        kauflandPriceAsNumber *
+        convertToDecimal(parseInt(existingItem[0]?.kauflandVariableFee ?? "0"));
+      const kauflandFixedFeeReduction =
+        kauflandPriceAsNumber *
+        convertToDecimal(parseInt(existingItem[0]?.kauflandFixedFee ?? "0"));
+      const kauflandShippingRateReduction = convertToDecimal(
+        parseInt(existingItem[0]?.kauflandShippingRate ?? "0"),
+      );
+
       const profit =
         existingItem[0]?.amazonPrice && existingItem[0]?.kauflandPrice
           ? (
               parseFloat(existingItem[0]?.amazonPrice) -
-              parseFloat(existingItem[0]?.kauflandPrice)
+              parseFloat(existingItem[0]?.kauflandPrice) -
+              kauflandVATReduction -
+              kauflandCategoryFeeReduction -
+              kauflandFixedFeeReduction -
+              kauflandShippingRateReduction
             ).toString()
           : null;
       const roi =

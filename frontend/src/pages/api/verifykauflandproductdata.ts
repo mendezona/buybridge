@@ -60,6 +60,7 @@ export default async function handler(
 
     const productFound = true;
     const productName = officialKauflandProductData.title;
+    const kauflandProductId = officialKauflandProductData.id_product.toString();
     const kauflandLink = officialKauflandProductData.url;
     const kauflandVat = officialKauflandProductData.category.vat;
     const kauflandVariableFee =
@@ -76,13 +77,16 @@ export default async function handler(
         kauflandPrice = units[0]?.price
           ? formatToTwoDecimalPlaces(units[0]?.price).toString()
           : null;
-        kauflandShippingRate = units[0]?.shipping_rate?.toString() ?? null;
+        kauflandShippingRate = units[0]?.shipping_rate
+          ? formatToTwoDecimalPlaces(units[0]?.shipping_rate)
+          : null;
       }
     }
 
     const productData: KauflandProductData = {
       productFound,
       productName,
+      kauflandProductId,
       kauflandPrice,
       kauflandLink,
       kauflandVat,

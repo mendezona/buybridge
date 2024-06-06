@@ -52,8 +52,8 @@ export function NewProductForm() {
         },
       );
 
-      const addNewProductToKauflandPromise = axios.post(
-        "/api/addnewproductkaufland",
+      const verifyKauflandProductDataPromise = axios.post(
+        "/api/verifykauflandproductdata",
         {
           ean: data.ean,
         },
@@ -61,35 +61,27 @@ export function NewProductForm() {
 
       const [amazonResponse, kauflandResponse] = await Promise.allSettled([
         addNewProductToAmazonPromise,
-        addNewProductToKauflandPromise,
+        verifyKauflandProductDataPromise,
       ]);
 
       if (amazonResponse.status === "rejected") {
-        errors.push("Error with Amazon API: " + amazonResponse.reason);
+        errors.push("Error with Amazon product data: " + amazonResponse.reason);
       } else {
         const amazonData = amazonResponse.value.data as ApiReturnedData;
         if (amazonData.error) {
-          errors.push("Amazon API Error: " + amazonData.error);
+          errors.push("Amazon error: " + amazonData.error);
         }
       }
 
       if (kauflandResponse.status === "rejected") {
-        errors.push("Error with Kaufland API: " + kauflandResponse.reason);
+        errors.push(
+          "Error with Kaufland product data: " + kauflandResponse.reason,
+        );
       } else {
         const kauflandData = kauflandResponse.value.data as ApiReturnedData;
         if (kauflandData.error) {
-          errors.push("Kaufland API Error: " + kauflandData.error);
+          errors.push("Kaufland error: " + kauflandData.error);
         }
-      }
-
-      const verifykauflandproductdata = await axios.post(
-        "/api/verifykauflandproductdata",
-        {
-          ean: data.ean,
-        },
-      );
-      if (verifykauflandproductdata.status !== 200) {
-        errors.push("Error verifying Kaufland product data");
       }
 
       setLoading(false);
