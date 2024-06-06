@@ -144,8 +144,8 @@ export async function updateProfitAndROI(ean: string): Promise<void> {
       const profit =
         existingItem[0]?.amazonPrice && existingItem[0]?.kauflandPrice
           ? (
-              parseFloat(existingItem[0]?.amazonPrice) -
               parseFloat(existingItem[0]?.kauflandPrice) -
+              parseFloat(existingItem[0]?.amazonPrice) -
               kauflandVATReduction -
               kauflandCategoryFeeReduction -
               kauflandFixedFeeReduction -
