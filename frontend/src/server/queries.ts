@@ -1,7 +1,7 @@
 import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
-import { desc, eq, isNotNull, sql } from "drizzle-orm";
+import { and, desc, eq, gt, isNotNull, sql } from "drizzle-orm";
 import { type AmazonProductData } from "~/scrapers/amazonApi/amazonApi.types";
 import { type KauflandProductData } from "~/scrapers/kauflandScrapper/kauflandScrapper.types";
 import { detectAndConvertPrice } from "~/scrapers/scrappers.helpers";
@@ -10,12 +10,23 @@ import { items } from "./db/schema";
 import { convertToDecimal } from "./queries.helpers";
 import { type Item } from "./queries.types";
 
-export async function getAllItemsOrderedByProfit(): Promise<Item[]> {
+export async function getAllItemsWithRecentDataOrderedByProfit(): Promise<
+  Item[]
+> {
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const dbItems = await db
     .select()
     .from(items)
-    .where(isNotNull(items.profit))
+    .where(
+      and(
+        isNotNull(items.profit),
+        gt(items.profitUpdatedAt, oneDayAgo),
+        gt(items.amazonDataUpdatedAt, oneDayAgo),
+        gt(items.kauflandDataUpdatedAt, oneDayAgo),
+      ),
+    )
     .orderBy(desc(items.profit));
+
   return dbItems;
 }
 
@@ -52,7 +63,7 @@ export async function saveNewKauflandItem(
           kauflandVariableFee: kauflandProductData.kauflandVariableFee,
           kauflandFixedFee: kauflandProductData.kauflandFixedFee,
           kauflandShippingRate: kauflandProductData.kauflandShippingRate,
-          updatedAt: sql`CURRENT_TIMESTAMP`,
+          kauflandDataUpdatedAt: sql`CURRENT_TIMESTAMP`,
         })
         .where(eq(items.ean, ean));
     } else {
@@ -66,7 +77,7 @@ export async function saveNewKauflandItem(
         kauflandVariableFee: kauflandProductData.kauflandVariableFee,
         kauflandFixedFee: kauflandProductData.kauflandFixedFee,
         kauflandShippingRate: kauflandProductData.kauflandShippingRate,
-        updatedAt: sql`CURRENT_TIMESTAMP`,
+        kauflandDataUpdatedAt: sql`CURRENT_TIMESTAMP`,
         createdAt: sql`CURRENT_TIMESTAMP`,
       });
     }
@@ -99,7 +110,7 @@ export async function saveNewAmazonItem(
             amazonProductData.amazonPrice &&
             detectAndConvertPrice(amazonProductData.amazonPrice),
           amazonLink: amazonProductData.amazonLink ?? "",
-          updatedAt: sql`CURRENT_TIMESTAMP`,
+          amazonDataUpdatedAt: sql`CURRENT_TIMESTAMP`,
         })
         .where(eq(items.ean, ean));
     } else {
@@ -110,7 +121,7 @@ export async function saveNewAmazonItem(
           amazonProductData.amazonPrice &&
           detectAndConvertPrice(amazonProductData.amazonPrice),
         amazonLink: amazonProductData.amazonLink,
-        updatedAt: sql`CURRENT_TIMESTAMP`,
+        amazonDataUpdatedAt: sql`CURRENT_TIMESTAMP`,
         createdAt: sql`CURRENT_TIMESTAMP`,
       });
     }
@@ -168,7 +179,7 @@ export async function updateProfitAndROI(ean: string): Promise<void> {
         .set({
           profit: profit,
           roi: roi,
-          updatedAt: sql`CURRENT_TIMESTAMP`,
+          profitUpdatedAt: sql`CURRENT_TIMESTAMP`,
         })
         .where(eq(items.ean, ean));
     }

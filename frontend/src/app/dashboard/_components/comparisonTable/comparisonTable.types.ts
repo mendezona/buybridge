@@ -19,5 +19,5 @@ export interface ComparisonTableItem {
   kauflandShippingRate?: string | null;
   kauflandLink?: string | null;
   amazonLink?: string | null;
-  updatedAt: string;
+  profitUpdatedAt?: string | null;
 }

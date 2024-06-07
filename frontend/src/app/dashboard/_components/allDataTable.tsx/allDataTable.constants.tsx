@@ -262,7 +262,7 @@ export const allDataTableColumns: ColumnDef<ComparisonTableItem>[] = [
     },
   },
   {
-    accessorKey: "updatedAt",
+    accessorKey: "profitUpdatedAt",
     header: "Last Updated",
   },
 ];

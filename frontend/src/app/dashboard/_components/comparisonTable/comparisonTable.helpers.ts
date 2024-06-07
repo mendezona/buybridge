@@ -8,7 +8,7 @@ dayjs.extend(relativeTime);
 export function convertDatabaseItemToPlainObjectType(
   item: Item,
 ): ComparisonTableItem {
-  const updatedAt: string = dayjs(item.updatedAt).fromNow();
+  const profitUpdatedAt: string = dayjs(item.profitUpdatedAt).fromNow();
 
   return {
     productName: item.productName,
@@ -22,7 +22,7 @@ export function convertDatabaseItemToPlainObjectType(
     kauflandShippingRate: item.kauflandShippingRate,
     kauflandLink: item.kauflandLink,
     amazonLink: item.amazonLink,
-    updatedAt,
+    profitUpdatedAt,
   };
 }
 

@@ -26,9 +26,13 @@ export const items = createTable(
     id: serial("id").primaryKey(),
     productName: varchar("productName", { length: 256 }),
     ean: varchar("ean", { length: 256 }).unique().notNull(),
+    profit: decimal("profit", { precision: 10, scale: 2 }),
+    profitUpdatedAt: timestamp("profitUpdatedAt", { withTimezone: true }),
+    roi: decimal("roi", { precision: 10, scale: 2 }),
+    createdAt: timestamp("createdAt", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
     asin: varchar("asin", { length: 256 }).unique(),
-    fbmSeller: varchar("fbmSeller", { length: 256 }),
-    fba: varchar("fba", { length: 256 }),
     amazonPrice: decimal("amazonPrice", { precision: 10, scale: 2 }),
     amazonStockLevel: varchar("amazonStockLevel", { length: 256 }),
     amazonShippingFee: decimal("amazonShippingFee", {
@@ -36,6 +40,10 @@ export const items = createTable(
       scale: 2,
     }),
     amazonLink: varchar("amazonLink", { length: 256 }),
+    amazonDataUpdatedAt: timestamp("amazonDataUpdatedAt", {
+      withTimezone: true,
+    }),
+    kauflandProductId: varchar("kauflandProductId", { length: 256 }),
     kauflandPrice: decimal("kauflandPrice", {
       precision: 10,
       scale: 2,
@@ -45,17 +53,6 @@ export const items = createTable(
       precision: 10,
       scale: 2,
     }),
-    kauflandLink: varchar("kauflandLink", { length: 256 }),
-    profit: decimal("profit", { precision: 10, scale: 2 }),
-    roi: decimal("roi", { precision: 10, scale: 2 }),
-    createdAt: timestamp("createdAt", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull()
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
-    kauflandProductId: varchar("kauflandProductId", { length: 256 }),
     kauflandVat: decimal("kauflandVat", { precision: 10, scale: 2 }),
     kauflandVariableFee: decimal("kauflandVariableFee", {
       precision: 10,
@@ -65,6 +62,10 @@ export const items = createTable(
     kauflandShippingRate: decimal("kauflandShippingRate", {
       precision: 10,
       scale: 2,
+    }),
+    kauflandLink: varchar("kauflandLink", { length: 256 }),
+    kauflandDataUpdatedAt: timestamp("kauflandDataUpdatedAt", {
+      withTimezone: true,
     }),
   },
   (item) => ({

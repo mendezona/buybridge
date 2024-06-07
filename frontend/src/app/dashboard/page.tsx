@@ -42,7 +42,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { getAllItemsOrderedByProfit } from "~/server/queries";
+import { getAllItemsWithRecentDataOrderedByProfit } from "~/server/queries";
 // import { ComparisonTable } from "./_components/comparisonTable/comparisonTable";
 // import { columns } from "./_components/comparisonTable/comparisonTable.constants";
 import { AllDataTable } from "./_components/allDataTable.tsx/allDataTable";
@@ -52,7 +52,7 @@ import { type ComparisonTableItem } from "./_components/comparisonTable/comparis
 import { NewProductForm } from "./_components/newProductForm";
 
 export default async function Dashboard() {
-  const comparisonTableData = await getAllItemsOrderedByProfit();
+  const comparisonTableData = await getAllItemsWithRecentDataOrderedByProfit();
   // const convertedData: ComparisonTableItem[] =
   //   convertToPlainObjects(comparisonTableData);
   const convertedDataAllTable: ComparisonTableItem[] =
