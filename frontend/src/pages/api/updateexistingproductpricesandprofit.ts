@@ -1,19 +1,25 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
+import { NextResponse, type NextRequest } from "next/server";
 
-async function handler(request: Request) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const data = await request.json();
-
-  for (let i = 0; i < 10; i++) {
-    await fetch("https://firstqstashmessage.requestcatcher.com/test", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" },
-    });
-    await new Promise((resolve) => setTimeout(resolve, 500));
+const handler = async (_req: NextRequest) => {
+  try {
+    console.log(
+      "Cron job executed - Update Existing Product Prices and Profit",
+    );
+    return NextResponse.json(
+      { message: "Cron job executed successfully" },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error(
+      "Error executing cron job - Update Existing Product Prices and Profit:",
+      error,
+    );
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 },
+    );
   }
-
-  return Response.json({ success: true });
-}
+};
 
 export const POST = verifySignatureAppRouter(handler);
