@@ -3,7 +3,6 @@ name: CI
 on: [push, pull_request]
 
 env:
-  DATABASE_URL: "https://fake.com"
   POSTGRES_URL: "https://fake.com"
   POSTGRES_PRISMA_URL: "https://fake.com"
   POSTGRES_URL_NO_SSL: "https://fake.com"
@@ -43,16 +42,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install
         working-directory: ./frontend
 
       - name: Typecheck
-        run: npm run typecheck
+        run: pnpm run typecheck
         working-directory: ./frontend
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
         working-directory: ./frontend
 
       - name: Print Environment Variable
