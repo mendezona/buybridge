@@ -5,7 +5,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { type ApiReturnedData } from "~/api/api.types";
+import { type ApiReturnedData } from "~/app/api/api.types";
 import { LoadingSpinner } from "~/components/loadingSpinner";
 import { Button } from "~/components/ui/button";
 import {

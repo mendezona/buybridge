@@ -1,14 +1,14 @@
 import {
-  File,
+  // File,
   Home as HomeIcon,
   LineChart,
-  ListFilter,
+  // ListFilter,
   Package,
   Package2,
   PanelLeft,
-  PlusCircle,
+  // PlusCircle,
   Search,
-  Settings,
+  // Settings,
   ShoppingCart,
   Users2,
 } from "lucide-react";

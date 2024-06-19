@@ -2,9 +2,9 @@ import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
 import { and, desc, eq, gt, isNotNull, sql } from "drizzle-orm";
-import { type AmazonProductData } from "~/scrapers/amazonApi/amazonApi.types";
-import { type KauflandProductData } from "~/scrapers/kauflandScrapper/kauflandScrapper.types";
-import { detectAndConvertPrice } from "~/scrapers/scrappers.helpers";
+import { type AmazonProductData } from "~/marketplaceConnectors/amazon/amazonApi/amazonApi.types";
+import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
+import { detectAndConvertPrice } from "~/marketplaceConnectors/scrappers.helpers";
 import { db } from "./db";
 import { items } from "./db/schema";
 import { convertToDecimal } from "./queries.helpers";

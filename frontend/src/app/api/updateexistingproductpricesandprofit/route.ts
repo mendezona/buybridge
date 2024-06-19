@@ -1,7 +1,7 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-const handler = async (_req: NextRequest) => {
+const handler = async (_req: Request) => {
   try {
     console.log(
       "Cron job executed - Update Existing Product Prices and Profit",

@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 import puppeteer from "puppeteer-core";
-import { waitForJavascriptToLoad } from "../scrappers.helpers";
+import { waitForJavascriptToLoad } from "~/marketplaceConnectors/scrappers.helpers";
 import { extractKauflandProductId } from "./kauflandScrapper.helpers";
 import { type KauflandProductData } from "./kauflandScrapper.types";
 
