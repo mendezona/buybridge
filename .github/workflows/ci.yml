@@ -29,10 +29,10 @@ env:
   SENTRY_PROJECT: "project"
   KAUFLAND_SELLER_CLIENT_KEY: "fakeKey"
   KAUFLAND_SELLER_SECRET_KEY: "fakeKey"
-  UPSTASH_QSTASH_URL: "https://fake.com"
-  UPSTASH_QSTASH_TOKEN: "fakeToken"
-  UPSTASH_QSTASH_CURRENT_SIGNING_KEY: "fakeKey"
-  UPSTASH_QSTASH_NEXT_SIGNING_KEY: "fakeKey"
+  QSTASH_URL: "https://fake.com"
+  QSTASH_TOKEN: "fakeToken"
+  QSTASH_CURRENT_SIGNING_KEY: "fakeKey"
+  QSTASH_NEXT_SIGNING_KEY: "fakeKey"
 
 jobs:
   build:
