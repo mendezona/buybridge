@@ -1,4 +1,4 @@
-export interface KauflandSellerProductApiResponse {
+export interface KauflandSellerApiProductDataResponse {
   data: ProductResponse;
 }
 

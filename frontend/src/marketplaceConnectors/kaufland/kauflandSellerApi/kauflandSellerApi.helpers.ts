@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-export function signRequest(
+export function kauflandSellerApiSignRequest(
   method: string,
   uri: string,
   body: string,

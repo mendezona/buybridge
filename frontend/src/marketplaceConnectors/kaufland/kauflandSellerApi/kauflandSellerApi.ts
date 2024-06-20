@@ -1,13 +1,13 @@
 import * as Sentry from "@sentry/nextjs";
 import axios, { type AxiosResponse } from "axios";
-import { signRequest } from "./kauflandApi.helpers";
-import { type KauflandSellerProductApiResponse } from "./kauflandApi.types";
+import { kauflandSellerApiSignRequest } from "./kauflandSellerApi.helpers";
+import { type KauflandSellerApiProductDataResponse } from "./kauflandSellerApi.types";
 
-export async function kauflandApiGetProductData({
+export async function kauflandSellerApiGetProductData({
   ean,
 }: {
   ean: string;
-}): Promise<AxiosResponse<KauflandSellerProductApiResponse> | null> {
+}): Promise<AxiosResponse<KauflandSellerApiProductDataResponse> | null> {
   console.log("Kaufland product API - request initiated for EAN:", ean);
 
   const baseUrl = "https://sellerapi.kaufland.com/v2";
@@ -25,7 +25,13 @@ export async function kauflandApiGetProductData({
     Accept: "application/json",
     "Shop-Client-Key": clientKey,
     "Shop-Timestamp": timestamp.toString(),
-    "Shop-Signature": signRequest("GET", uri, "", timestamp, secretKey),
+    "Shop-Signature": kauflandSellerApiSignRequest(
+      "GET",
+      uri,
+      "",
+      timestamp,
+      secretKey,
+    ),
     "User-Agent": userAgent,
   };
 
@@ -33,7 +39,7 @@ export async function kauflandApiGetProductData({
     const response = await axios.get(uri, { headers });
     console.log("Kaufland Seller API Response Data:", response.data);
     if (response.data !== null) {
-      return response as AxiosResponse<KauflandSellerProductApiResponse>;
+      return response as AxiosResponse<KauflandSellerApiProductDataResponse>;
     }
     return null;
   } catch (error) {

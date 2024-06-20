@@ -3,9 +3,9 @@ import * as Sentry from "@sentry/nextjs";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
-import { kauflandApiGetProductData } from "~/marketplaceConnectors/kaufland/kauflandApi/kauflandApi";
-import { type ProductResponse } from "~/marketplaceConnectors/kaufland/kauflandApi/kauflandApi.types";
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
+import { kauflandSellerApiGetProductData } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi";
+import { type ProductResponse } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi.types";
 import { formatToTwoDecimalPlaces } from "~/marketplaceConnectors/scrappers.helpers";
 import { saveNewKauflandItem, updateProfitAndROI } from "~/server/queries";
 
@@ -38,9 +38,10 @@ export async function POST(request: Request) {
     const json = await request.json();
     const { ean } = verifyKauflandProductDataSchema.parse(json);
 
-    const officialKauflandSellerApiResponse = await kauflandApiGetProductData({
-      ean,
-    });
+    const officialKauflandSellerApiResponse =
+      await kauflandSellerApiGetProductData({
+        ean,
+      });
     const officialKauflandProductData = officialKauflandSellerApiResponse?.data
       .data as ProductResponse | null;
     if (!officialKauflandProductData) {
