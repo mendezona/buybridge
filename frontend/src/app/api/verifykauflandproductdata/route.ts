@@ -4,7 +4,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
-import { kauflandSellerApiGetProductData } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi";
+import { kauflandSellerApiGetProductDataByEAN } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi";
 import { type ProductResponse } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi.types";
 import { formatToTwoDecimalPlaces } from "~/marketplaceConnectors/scrappers.helpers";
 import { saveNewKauflandItem, updateProfitAndROI } from "~/server/queries";
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     const { ean } = verifyKauflandProductDataSchema.parse(json);
 
     const officialKauflandSellerApiResponse =
-      await kauflandSellerApiGetProductData({
+      await kauflandSellerApiGetProductDataByEAN({
         ean,
       });
     const officialKauflandProductData = officialKauflandSellerApiResponse?.data
