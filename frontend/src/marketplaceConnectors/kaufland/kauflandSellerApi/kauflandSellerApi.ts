@@ -199,7 +199,7 @@ export async function kauflandSellerApiGetUnitsByEAN({
   }
 }
 
-export const kauflandSellerApiDeleteAllUnitsUsingProductIds = async ({
+export const kauflandSellerApiDeleteAllUnitsUsingUnitIds = async ({
   unitIds,
 }: KauflandSellerApiDeleteAllUnitsUsingProductIds): Promise<void> => {
   console.log(
