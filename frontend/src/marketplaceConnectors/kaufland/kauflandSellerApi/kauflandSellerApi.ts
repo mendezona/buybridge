@@ -11,6 +11,7 @@ import {
   KauflandSellerApiFulfillmentType,
   KauflandSellerApiRequestMethod,
   type KauflandProductListing,
+  type KauflandSellerApiDeleteAllUnitsUsingProductIds,
   type KauflandSellerApiGetProductDataByEANParams,
   type KauflandSellerApiGetUnitByEANResponse,
   type KauflandSellerApiGetUnitsByEANParams,
@@ -197,3 +198,49 @@ export async function kauflandSellerApiGetUnitsByEAN({
     throw error;
   }
 }
+
+export const kauflandSellerApiDeleteAllUnitsUsingProductIds = async ({
+  unitIds,
+}: KauflandSellerApiDeleteAllUnitsUsingProductIds): Promise<void> => {
+  console.log(
+    "kauflandSellerApiDeleteAllUnitsUsingProductIds - delete all units initiated",
+  );
+  const clientKey = process.env.KAUFLAND_SELLER_CLIENT_KEY!;
+  const secretKey = process.env.KAUFLAND_SELLER_SECRET_KEY!;
+
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  try {
+    await Promise.all(
+      unitIds.map(async (unitId: string) => {
+        const timestamp = dayjs().unix();
+        const params = new URLSearchParams();
+        params.append("storefront", KAUFLAND_DE_STOREFRONT);
+        const url = `${KAUFLAND_SELLER_API_BASE_URL}/units/${unitId}?${params.toString()}`;
+
+        const signature = kauflandSellerApiSignRequest({
+          method: KauflandSellerApiRequestMethod.DELETE,
+          url,
+          timestamp,
+          secretKey,
+        });
+
+        const headers = {
+          Accept: "*/*",
+          "Shop-Client-Key": clientKey,
+          "Shop-Signature": signature,
+          "Shop-Timestamp": timestamp.toString(),
+          "User-Agent": KAUFLAND_SELLER_API_USER_AGENT,
+        };
+
+        await axios.delete(url, { headers });
+      }),
+    );
+  } catch (error) {
+    Sentry.captureException(error);
+    console.error(
+      "kauflandSellerApiDeleteAllUnitsUsingProductIds - Error:",
+      error,
+    );
+    throw error;
+  }
+};

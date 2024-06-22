@@ -13,6 +13,7 @@ export interface KauflandSellerApiSignRequestParams {
 export enum KauflandSellerApiRequestMethod {
   GET = "GET",
   POST = "POST",
+  DELETE = "DELETE",
 }
 
 export enum KauflandSellerApiDeVatIndicator {
@@ -199,4 +200,8 @@ export interface KauflandSellerApiUnit {
   shipping_rate: number;
   fulfillment_type: string;
   vat_indicator: string;
+}
+
+export interface KauflandSellerApiDeleteAllUnitsUsingProductIds {
+  unitIds: string[];
 }
