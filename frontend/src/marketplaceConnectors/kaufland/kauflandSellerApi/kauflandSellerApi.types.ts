@@ -4,10 +4,10 @@ export interface KauflandSellerApiProductDataResponse {
 
 export interface KauflandSellerApiSignRequestParams {
   method: KauflandSellerApiRequestMethod;
-  uri: string;
-  body: string;
+  url: string;
   secretKey: string;
   timestamp: number;
+  body?: string;
 }
 
 export enum KauflandSellerApiRequestMethod {
@@ -151,4 +151,52 @@ export interface Unit {
 
 export interface Seller {
   pseudonym: string;
+}
+
+export interface KauflandSellerApiGetUnitsByEANParams {
+  ean: string;
+  limit?: number;
+  offset?: number;
+  storefront?: string;
+  fulfillment_type?: string;
+  embedded?: string;
+}
+
+export enum KauflandSellerApiFulfillmentType {
+  KAUFLAND = "fulfilled_by_kaufland",
+  MERCHANT = "fulfilled_by_merchant",
+}
+
+export interface KauflandSellerApiGetUnitByEANResponse {
+  data: KauflandSellerApiUnit[];
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+  };
+}
+
+export interface KauflandSellerApiUnit {
+  status: string;
+  currency: string;
+  transport_time_min: number;
+  transport_time_max: number;
+  id_unit: number;
+  note: string;
+  condition: string;
+  listing_price: number;
+  minimum_price: number;
+  price: number;
+  id_offer: string;
+  id_product: number;
+  id_shipping_group: number;
+  id_warehouse: number;
+  amount: number;
+  date_inserted_iso: string;
+  date_lastchange_iso: string;
+  handling_time: number;
+  storefront: string;
+  shipping_rate: number;
+  fulfillment_type: string;
+  vat_indicator: string;
 }

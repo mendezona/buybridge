@@ -42,8 +42,8 @@ export async function POST(request: Request) {
       await kauflandSellerApiGetProductDataByEAN({
         ean,
       });
-    const officialKauflandProductData = officialKauflandSellerApiResponse?.data
-      .data as ProductResponse | null;
+    const officialKauflandProductData =
+      officialKauflandSellerApiResponse?.data as ProductResponse | null;
     if (!officialKauflandProductData) {
       return new Response(
         JSON.stringify({ error: "Kaufland product not found" }),

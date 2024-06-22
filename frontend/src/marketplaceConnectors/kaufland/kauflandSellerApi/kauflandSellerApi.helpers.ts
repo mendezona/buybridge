@@ -3,12 +3,12 @@ import { type KauflandSellerApiSignRequestParams } from "./kauflandSellerApi.typ
 
 export function kauflandSellerApiSignRequest({
   method,
-  uri,
-  body,
+  url,
+  body = "",
   timestamp,
   secretKey,
 }: KauflandSellerApiSignRequestParams): string {
-  const stringToSign = [method, uri, body, timestamp].join("\n");
+  const stringToSign = [method, url, body, timestamp].join("\n");
   return crypto
     .createHmac("sha256", secretKey)
     .update(stringToSign)
