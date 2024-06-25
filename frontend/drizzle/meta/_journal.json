@@ -1,0 +1,27 @@
+{
+  "version": "6",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1719344853169,
+      "tag": "0000_worthless_brood",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1719346333097,
+      "tag": "0001_mute_morgan_stark",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1719347256984,
+      "tag": "0002_bouncy_captain_britain",
+      "breakpoints": true
+    }
+  ]
+}

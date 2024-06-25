@@ -81,7 +81,7 @@ export async function kauflandSellerApiCreateNewUnit(
   productData: KauflandProductListing,
 ) {
   console.log(
-    "kauflandSellerApiCreateNewListing - new inventory listing created",
+    "kauflandSellerApiCreateNewListing - new unit listing beginning to be created",
   );
   const clientKey = process.env.KAUFLAND_SELLER_CLIENT_KEY!;
   const secretKey = process.env.KAUFLAND_SELLER_SECRET_KEY!;
@@ -89,7 +89,9 @@ export async function kauflandSellerApiCreateNewUnit(
   params.append("storefront", KAUFLAND_DE_STOREFRONT);
   const url = `${KAUFLAND_SELLER_API_BASE_URL}/units?${params.toString()}`;
   const timestamp = dayjs().unix();
-  const body = JSON.stringify(productData);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { storefront, ...filteredProductData } = productData;
+  const body = JSON.stringify(filteredProductData);
 
   const signature = kauflandSellerApiSignRequest({
     method: KauflandSellerApiRequestMethod.POST,
@@ -182,6 +184,7 @@ export async function kauflandSellerApiGetUnitsByEAN({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const responseData =
         response.data as KauflandSellerApiGetUnitByEANResponse;
+
       console.log(
         "kauflandSellerApiGetUnitsByEAN - Listed products found successfully.",
       );
@@ -208,10 +211,9 @@ export const kauflandSellerApiDeleteAllUnitsUsingUnitIds = async ({
   const clientKey = process.env.KAUFLAND_SELLER_CLIENT_KEY!;
   const secretKey = process.env.KAUFLAND_SELLER_SECRET_KEY!;
 
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   try {
-    await Promise.all(
-      unitIds.map(async (unitId: string) => {
+    const deleteUnitRequests: Promise<void>[] = unitIds.map(
+      async (unitId: string) => {
         const timestamp = dayjs().unix();
         const params = new URLSearchParams();
         params.append("storefront", KAUFLAND_DE_STOREFRONT);
@@ -233,8 +235,9 @@ export const kauflandSellerApiDeleteAllUnitsUsingUnitIds = async ({
         };
 
         await axios.delete(url, { headers });
-      }),
+      },
     );
+    await Promise.all(deleteUnitRequests);
   } catch (error) {
     Sentry.captureException(error);
     console.error(

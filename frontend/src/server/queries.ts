@@ -6,7 +6,7 @@ import { type AmazonProductData } from "~/marketplaceConnectors/amazon/amazonApi
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
 import { detectAndConvertPrice } from "~/marketplaceConnectors/scrappers.helpers";
 import { db } from "./db";
-import { items } from "./db/schema";
+import { items, listings } from "./db/schema";
 import { convertToDecimal } from "./queries.helpers";
 import { type Item } from "./queries.types";
 
@@ -185,6 +185,52 @@ export async function updateProfitAndROI(ean: string): Promise<void> {
     }
 
     console.log("Profit and ROI information added successfully");
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;
+  }
+}
+
+export async function updateKauflandUnitListing(
+  userId: string,
+  ean: string,
+  kauflandUnitId: string,
+  unitCurrentlyListed: boolean,
+): Promise<void> {
+  try {
+    const existingItem = await db
+      .select()
+      .from(listings)
+      .where(
+        and(
+          eq(listings.userId, userId),
+          eq(listings.ean, ean),
+          eq(listings.kauflandUnitId, kauflandUnitId),
+        ),
+      );
+
+    if (existingItem.length > 0) {
+      await db
+        .update(listings)
+        .set({ unitCurrentlyListed, lastUpdatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(
+          and(
+            eq(listings.userId, userId),
+            eq(listings.ean, ean),
+            eq(listings.kauflandUnitId, kauflandUnitId),
+          ),
+        );
+    } else {
+      await db.insert(listings).values({
+        userId,
+        ean,
+        kauflandUnitId,
+        unitCurrentlyListed,
+        lastUpdatedAt: sql`CURRENT_TIMESTAMP`,
+      });
+    }
+
+    console.log("updateKauflandUnitListing - updated unit listing for", ean);
   } catch (error) {
     Sentry.captureException(error);
     throw error;

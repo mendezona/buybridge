@@ -1,0 +1,1 @@
+ALTER TABLE "buyBridge_Listing" DROP CONSTRAINT "buyBridge_Listing_ean_unique";

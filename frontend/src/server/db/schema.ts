@@ -3,8 +3,10 @@
 
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   decimal,
   index,
+  json,
   pgTableCreator,
   serial,
   timestamp,
@@ -73,3 +75,14 @@ export const items = createTable(
     asinIndex: index("asin_idx").on(item.asin),
   }),
 );
+
+export const listings = createTable("Listing", {
+  id: serial("id").primaryKey(),
+  userId: varchar("userId", { length: 256 }),
+  ean: varchar("ean", { length: 256 }).notNull(),
+  kauflandUnitId: varchar("kauflandUnitId", { length: 256 }),
+  unitCurrentlyListed: boolean("unitCurrentlyListed").notNull(),
+  lastUpdatedAt: timestamp("lastUpdatedAt", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
