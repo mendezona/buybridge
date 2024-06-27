@@ -2,7 +2,10 @@ import * as Sentry from "@sentry/nextjs";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { getProductEANsThatNeedPriceDataRefresh } from "~/server/queries";
+import {
+  getProductEANsThatNeedPriceDataRefresh,
+  updateTimeOfLastAttemptedPriceRefreshForAListOfEANs,
+} from "~/server/queries";
 import { DEFAULT_GERMANY_TIMEZONE } from "./actions.constants";
 
 dayjs.extend(utc);
@@ -24,7 +27,13 @@ export const refreshProductData = async (): Promise<void> => {
     console.log("productEANs", productEANs);
 
     // TODO: Update their time
-    // await updateTimeOfLastAttemptedPriceRefreshForAListOfEANs(productEANs);
+    if (productEANs.length === 0) {
+      console.log(
+        "refreshProductData - no products requiring updated price data found",
+      );
+      return;
+    }
+    await updateTimeOfLastAttemptedPriceRefreshForAListOfEANs(productEANs);
 
     // // TODO: refresh all data for Amazon and Kaufland in batches of 100
     // // TODO: update profit and roi for all rows

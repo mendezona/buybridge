@@ -1,7 +1,18 @@
 import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
-import { and, desc, eq, gt, isNotNull, lt, sql } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNotNull,
+  isNull,
+  lt,
+  or,
+  sql,
+} from "drizzle-orm";
 import { type AmazonProductData } from "~/marketplaceConnectors/amazon/amazonApi/amazonApi.types";
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
 import { detectAndConvertPrice } from "~/marketplaceConnectors/scrappers.helpers";
@@ -255,7 +266,12 @@ export const getProductEANsThatNeedPriceDataRefresh = async (
         ean: items.ean,
       })
       .from(items)
-      .where(lt(items.productDataLastAttemptedRefreshAt, timeToCompareTo))
+      .where(
+        or(
+          lt(items.productDataLastAttemptedRefreshAt, timeToCompareTo),
+          isNull(items.productDataLastAttemptedRefreshAt),
+        ),
+      )
       .limit(maxResults);
 
     if (existingItems.length > 0) {
@@ -269,6 +285,31 @@ export const getProductEANsThatNeedPriceDataRefresh = async (
       "getProductEANsThatNeedPriceDataRefresh - no products requiring updated price data found",
     );
     return [];
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;
+  }
+};
+
+/**
+ * Update the time of the last attempted refresh for a list of EANs
+ *
+ * @param productEANs - An array of EANs to update the last attempted refresh time for.
+ */
+export const updateTimeOfLastAttemptedPriceRefreshForAListOfEANs = async (
+  productEANs: string[],
+): Promise<void> => {
+  try {
+    await db
+      .update(items)
+      .set({
+        productDataLastAttemptedRefreshAt: sql`CURRENT_TIMESTAMP`,
+      })
+      .where(inArray(items.ean, productEANs));
+
+    console.log(
+      "updateTimeOfLastAttemptedPriceRefreshForAListOfEANs - timestamp of last pricing refresh updated successfully",
+    );
   } catch (error) {
     Sentry.captureException(error);
     throw error;
