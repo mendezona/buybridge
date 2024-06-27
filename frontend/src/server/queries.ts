@@ -1,7 +1,7 @@
 import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
-import { and, desc, eq, gt, isNotNull, sql } from "drizzle-orm";
+import { and, desc, eq, gt, isNotNull, lt, sql } from "drizzle-orm";
 import { type AmazonProductData } from "~/marketplaceConnectors/amazon/amazonApi/amazonApi.types";
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
 import { detectAndConvertPrice } from "~/marketplaceConnectors/scrappers.helpers";
@@ -236,3 +236,41 @@ export async function updateKauflandUnitListing(
     throw error;
   }
 }
+
+/**
+ * Get a list of EANs that need to be refreshed based on a time to compare to
+ *
+ * @param timeToCompareTo - The time to compare the last attempted refresh to.
+ * @param maxResults - The maximum number of results to return.
+ *
+ * @returns An array of EANs that need pricing refreshed.
+ */
+export const getProductEANsThatNeedPriceDataRefresh = async (
+  timeToCompareTo: Date,
+  maxResults = 100,
+): Promise<string[]> => {
+  try {
+    const existingItems = await db
+      .select({
+        ean: items.ean,
+      })
+      .from(items)
+      .where(lt(items.productDataLastAttemptedRefreshAt, timeToCompareTo))
+      .limit(maxResults);
+
+    if (existingItems.length > 0) {
+      console.log(
+        `getProductEANsThatNeedPriceDataRefresh - ${existingItems.length} products requiring updated price data found`,
+      );
+      return existingItems.map((item) => item.ean);
+    }
+
+    console.log(
+      "getProductEANsThatNeedPriceDataRefresh - no products requiring updated price data found",
+    );
+    return [];
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;
+  }
+};
