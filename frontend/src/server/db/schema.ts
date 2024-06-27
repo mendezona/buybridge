@@ -6,7 +6,6 @@ import {
   boolean,
   decimal,
   index,
-  json,
   pgTableCreator,
   serial,
   timestamp,
@@ -34,6 +33,9 @@ export const items = createTable(
     createdAt: timestamp("createdAt", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
+    productDataLastAttemptedRefreshAt: timestamp("createdAt", {
+      withTimezone: true,
+    }),
     asin: varchar("asin", { length: 256 }).unique(),
     amazonPrice: decimal("amazonPrice", { precision: 10, scale: 2 }),
     amazonStockLevel: varchar("amazonStockLevel", { length: 256 }),
