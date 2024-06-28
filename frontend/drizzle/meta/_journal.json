@@ -36,6 +36,13 @@
       "when": 1719471696127,
       "tag": "0004_mature_johnny_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1719593171890,
+      "tag": "0005_rapid_mad_thinker",
+      "breakpoints": true
     }
   ]
 }

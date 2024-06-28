@@ -1,0 +1,1 @@
+ALTER TABLE "buyBridge_Item" DROP COLUMN IF EXISTS "kauflandSellerFee";

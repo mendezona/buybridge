@@ -28,13 +28,13 @@ export const refreshProductDataAndUpdateUnitListings = async (
       .tz(DEFAULT_GERMANY_TIMEZONE)
       .startOf("day")
       .toDate();
+
     const productEANs: string[] = eans
       ? eans
       : await getProductEANsThatNeedPriceDataRefresh(startOfToday);
 
     if (productEANs.length > 0) {
       await updateTimeOfLastAttemptedPriceRefreshForAListOfEANs(productEANs);
-
       const pricingRefreshQueries: Promise<void>[] = productEANs.map(
         async (ean) => {
           await Promise.all([
@@ -44,6 +44,7 @@ export const refreshProductDataAndUpdateUnitListings = async (
           ]);
         },
       );
+
       await Promise.all(pricingRefreshQueries);
 
       // TODO: find listed products that are profitable or unprofitable
