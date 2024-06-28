@@ -5,9 +5,12 @@ import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
 import { kauflandSellerApiGetProductDataByEAN } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi";
-import { type ProductResponse } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi.types";
+import { type KauflandProductDataSchemaType } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi.types";
 import { formatToTwoDecimalPlaces } from "~/marketplaceConnectors/scrappers.helpers";
-import { saveNewKauflandItem, updateProfitAndROI } from "~/server/queries";
+import {
+  saveOrUpdateKauflandItemProductData,
+  updateProfitAndROI,
+} from "~/server/queries";
 
 const verifyKauflandProductDataSchema = z.object({
   ean: z.string(),
@@ -38,12 +41,8 @@ export async function POST(request: Request) {
     const json = await request.json();
     const { ean } = verifyKauflandProductDataSchema.parse(json);
 
-    const officialKauflandSellerApiResponse =
-      await kauflandSellerApiGetProductDataByEAN({
-        ean,
-      });
-    const officialKauflandProductData =
-      officialKauflandSellerApiResponse?.data as ProductResponse | null;
+    const officialKauflandProductData: KauflandProductDataSchemaType | null =
+      await kauflandSellerApiGetProductDataByEAN(ean);
     if (!officialKauflandProductData) {
       return new Response(
         JSON.stringify({ error: "Kaufland product not found" }),
@@ -58,9 +57,9 @@ export async function POST(request: Request) {
     const productName = officialKauflandProductData.title;
     const kauflandProductId = officialKauflandProductData.id_product.toString();
     const kauflandLink = officialKauflandProductData.url;
-    const kauflandVat = officialKauflandProductData.category.vat;
+    const kauflandVat = officialKauflandProductData.category.vat.toString();
     const kauflandVariableFee =
-      officialKauflandProductData.category.variable_fee;
+      officialKauflandProductData.category.variable_fee.toString();
     const kauflandFixedFee =
       officialKauflandProductData.category.fixed_fee.toString();
 
@@ -89,7 +88,7 @@ export async function POST(request: Request) {
       kauflandFixedFee,
       kauflandShippingRate,
     };
-    await saveNewKauflandItem(ean, productData);
+    await saveOrUpdateKauflandItemProductData(ean, productData);
     await updateProfitAndROI(ean);
 
     return new Response(

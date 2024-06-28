@@ -56,10 +56,6 @@ export const items = createTable(
       scale: 2,
     }),
     kauflandOffer: varchar("kauflandOffer", { length: 256 }),
-    kauflandSellerFee: decimal("kauflandSellerFee", {
-      precision: 10,
-      scale: 2,
-    }),
     kauflandVat: decimal("kauflandVat", { precision: 10, scale: 2 }),
     kauflandVariableFee: decimal("kauflandVariableFee", {
       precision: 10,

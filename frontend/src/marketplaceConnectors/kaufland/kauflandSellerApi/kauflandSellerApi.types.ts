@@ -1,3 +1,68 @@
+import { z } from "zod";
+
+export const SellerSchema = z.object({
+  pseudonym: z.string(),
+});
+
+export const UnitSchema = z.object({
+  condition: z.string(),
+  location: z.string(),
+  amount: z.number(),
+  price: z.number(),
+  delivery_time_max: z.number(),
+  delivery_time_min: z.number(),
+  id_product: z.number(),
+  id_unit: z.number(),
+  note: z.string(),
+  shipping_rate: z.number(),
+  shipping_group: z.string(),
+  warehouse: z.string(),
+  reference_price: z.number(),
+  date_inserted: z.string(),
+  date_lastchange: z.string().nullable(),
+  seller: SellerSchema,
+});
+
+export const CategorySchema = z.object({
+  id_category: z.number(),
+  name: z.string(),
+  title_singular: z.string(),
+  title_plural: z.string(),
+  level: z.number(),
+  url: z.string(),
+  is_leaf: z.boolean(),
+  id_parent_category: z.number(),
+  fixed_fee: z.number(),
+  shipping_category: z.string(),
+  variable_fee: z.number(),
+  vat: z.number(),
+});
+
+export const KauflandProductDataSchema = z.object({
+  storefront: z.string(),
+  id_product: z.number(),
+  title: z.string(),
+  eans: z.array(z.string()),
+  id_category: z.number(),
+  main_picture: z.string(),
+  manufacturer: z.string(),
+  url: z.string(),
+  age_rating: z.number(),
+  is_valid: z.boolean(),
+  dangerous_goods_li_shipping: z.any(),
+  danger_label_9A: z.any(),
+  category: CategorySchema,
+  units: z.array(UnitSchema),
+});
+
+export type KauflandProductDataSchemaType = z.infer<
+  typeof KauflandProductDataSchema
+>;
+
+export const KauflandSellerApiProductResponseSchema = z.object({
+  data: KauflandProductDataSchema,
+});
+
 export interface KauflandSellerApiProductDataResponse {
   data: ProductResponse;
 }
@@ -18,10 +83,6 @@ export enum KauflandSellerApiRequestMethod {
 
 export enum KauflandSellerApiDeVatIndicator {
   STANDARD_RATE = "standard_rate",
-}
-
-export interface KauflandSellerApiGetProductDataByEANParams {
-  ean: string;
 }
 
 export interface KauflandProductListing {
@@ -200,8 +261,4 @@ export interface KauflandSellerApiUnit {
   shipping_rate: number;
   fulfillment_type: string;
   vat_indicator: string;
-}
-
-export interface KauflandSellerApiDeleteAllUnitsUsingProductIds {
-  unitIds: string[];
 }

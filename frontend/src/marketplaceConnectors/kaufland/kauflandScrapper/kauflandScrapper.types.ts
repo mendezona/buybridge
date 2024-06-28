@@ -4,7 +4,6 @@ export interface KauflandProductData {
   productName?: string | null;
   kauflandPrice?: string | null;
   kauflandLink?: string | null;
-  kauflandSellerFee?: string | null;
   kauflandVat?: string | null;
   kauflandVariableFee?: string | null;
   kauflandFixedFee?: string | null;

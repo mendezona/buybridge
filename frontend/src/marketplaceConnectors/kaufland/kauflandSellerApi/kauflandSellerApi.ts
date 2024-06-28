@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import axios from "axios";
 import dayjs from "dayjs";
+import { ZodError } from "zod";
 import {
   KAUFLAND_DE_STOREFRONT,
   KAUFLAND_SELLER_API_BASE_URL,
@@ -9,26 +10,25 @@ import {
 import { kauflandSellerApiSignRequest } from "./kauflandSellerApi.helpers";
 import {
   KauflandSellerApiFulfillmentType,
+  KauflandSellerApiProductResponseSchema,
   KauflandSellerApiRequestMethod,
+  type KauflandProductDataSchemaType,
   type KauflandProductListing,
-  type KauflandSellerApiDeleteAllUnitsUsingProductIds,
-  type KauflandSellerApiGetProductDataByEANParams,
   type KauflandSellerApiGetUnitByEANResponse,
   type KauflandSellerApiGetUnitsByEANParams,
-  type KauflandSellerApiProductDataResponse,
   type KauflandSellerApiUnit,
 } from "./kauflandSellerApi.types";
 
 /**
  * Gets product data from Kaufland Seller API for a given EAN.
  *
- * @param tradingViewSymbol - The stock or crypto ticker symbol.
+ * @param ean - The EAN of the product to get data for.
  *
  * @returns The product data from Kaufland Seller API.
  */
-export async function kauflandSellerApiGetProductDataByEAN({
-  ean,
-}: KauflandSellerApiGetProductDataByEANParams): Promise<KauflandSellerApiProductDataResponse | null> {
+export const kauflandSellerApiGetProductDataByEAN = async (
+  ean: string,
+): Promise<KauflandProductDataSchemaType | null> => {
   console.log(
     "kauflandSellerApiGetProductData - request initiated for EAN:",
     ean,
@@ -59,27 +59,36 @@ export async function kauflandSellerApiGetProductDataByEAN({
     const response = await axios.get(url, { headers });
     console.log(
       "kauflandSellerApiGetProductData - Kaufland Seller API Response Data:",
-      response.data as KauflandSellerApiProductDataResponse,
+      response.data,
     );
-    if (response.data !== null) {
-      return null;
-    }
-    return null;
+
+    const parasedResponse = KauflandSellerApiProductResponseSchema.parse(
+      response.data,
+    );
+
+    return parasedResponse.data ? parasedResponse.data : null;
   } catch (error) {
     Sentry.captureException(error);
-    console.error("kauflandSellerApiGetProductData - Error:", error);
-    throw error;
+    if (error instanceof ZodError) {
+      console.error(
+        "kauflandSellerApiGetProductData - validation failed with ZodError:",
+        error.errors,
+      );
+    } else {
+      console.log("kauflandSellerApiGetProductData - error occurred", error);
+    }
+    return null;
   }
-}
+};
 
 /**
  * Creates a new unit listing in the Kaufland Seller API.
  *
  * @param productData - The product data used to create the unit listing.
  */
-export async function kauflandSellerApiCreateNewUnit(
+export const kauflandSellerApiCreateNewUnit = async (
   productData: KauflandProductListing,
-) {
+): Promise<void> => {
   console.log(
     "kauflandSellerApiCreateNewListing - new unit listing beginning to be created",
   );
@@ -126,7 +135,7 @@ export async function kauflandSellerApiCreateNewUnit(
     console.error("kauflandSellerApiCreateNewListing - Error:", error);
     throw error;
   }
-}
+};
 
 /**
  * Get the unit listings for a given EAN from the Kaufland Seller API.
@@ -138,16 +147,16 @@ export async function kauflandSellerApiCreateNewUnit(
  * @param fulfillment_type - The fulfillment type to get the unit listings for.
  * @param embedded - The embedded data to get the unit listings for.
  *
- * @returns The unit listings for the given EAN.
+ * @returns An array of unit listings for the given EAN.
  */
-export async function kauflandSellerApiGetUnitsByEAN({
+export const kauflandSellerApiGetUnitsByEAN = async ({
   ean,
   limit = 10,
   offset = 0,
   storefront = KAUFLAND_DE_STOREFRONT,
   fulfillment_type = KauflandSellerApiFulfillmentType.MERCHANT,
   embedded = "",
-}: KauflandSellerApiGetUnitsByEANParams): Promise<KauflandSellerApiUnit[]> {
+}: KauflandSellerApiGetUnitsByEANParams): Promise<KauflandSellerApiUnit[]> => {
   console.log("kauflandSellerApiGetUnitsByEAN - get units by EAN initiated");
   const clientKey = process.env.KAUFLAND_SELLER_CLIENT_KEY!;
   const secretKey = process.env.KAUFLAND_SELLER_SECRET_KEY!;
@@ -200,11 +209,14 @@ export async function kauflandSellerApiGetUnitsByEAN({
     console.error("kauflandSellerApiGetUnitsByEAN - Error:", error);
     throw error;
   }
-}
+};
 
-export const kauflandSellerApiDeleteAllUnitsUsingUnitIds = async ({
-  unitIds,
-}: KauflandSellerApiDeleteAllUnitsUsingProductIds): Promise<void> => {
+/**
+ * Deletes the unit listings for a given EAN from the Kaufland Seller API.
+ */
+export const kauflandSellerApiDeleteAllUnitsUsingUnitIds = async (
+  unitIds: string[],
+): Promise<void> => {
   console.log(
     "kauflandSellerApiDeleteAllUnitsUsingProductIds - delete all units initiated",
   );

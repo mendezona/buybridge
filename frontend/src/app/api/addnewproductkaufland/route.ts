@@ -5,7 +5,10 @@ import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { kauflandScrapper } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper";
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
-import { saveNewKauflandItem, updateProfitAndROI } from "~/server/queries";
+import {
+  saveOrUpdateKauflandItemProductData,
+  updateProfitAndROI,
+} from "~/server/queries";
 
 const addNewProductKauflandSchema = z.object({
   ean: z.string(),
@@ -17,6 +20,9 @@ const rateLimit = new Ratelimit({
   analytics: true,
 });
 
+/**
+ * Endpoint to add new Kaufland product data to the database
+ */
 export async function POST(request: Request) {
   console.log("API called - addnewproductkaufland");
   try {
@@ -49,7 +55,7 @@ export async function POST(request: Request) {
       );
     }
 
-    await saveNewKauflandItem(ean, kauflandProductData);
+    await saveOrUpdateKauflandItemProductData(ean, kauflandProductData);
     await updateProfitAndROI(ean);
 
     return new Response(

@@ -13,7 +13,7 @@ import {
   or,
   sql,
 } from "drizzle-orm";
-import { type AmazonProductData } from "~/marketplaceConnectors/amazon/amazonApi/amazonApi.types";
+import { type AmazonProductData } from "~/marketplaceConnectors/amazon/asinDataApi/asinDataApi.types";
 import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
 import { detectAndConvertPrice } from "~/marketplaceConnectors/scrappers.helpers";
 import { db } from "./db";
@@ -53,10 +53,10 @@ export async function getKauflandProductIdFromEAN(
   }
 }
 
-export async function saveNewKauflandItem(
+export const saveOrUpdateKauflandItemProductData = async (
   ean: string,
   kauflandProductData: KauflandProductData,
-): Promise<void> {
+): Promise<void> => {
   try {
     const existingItem = await db
       .select()
@@ -101,12 +101,18 @@ export async function saveNewKauflandItem(
     Sentry.captureException(error);
     throw error;
   }
-}
+};
 
-export async function saveNewAmazonItem(
+/**
+ * Saves the details of a new Amazon product to the database.
+ *
+ * @param ean - EAN of the product to save.
+ * @param amazonProductData - The product data to save.
+ */
+export const saveOrUpdateAmazonItemProductData = async (
   ean: string,
   amazonProductData: AmazonProductData,
-): Promise<void> {
+): Promise<void> => {
   try {
     const existingItem = await db
       .select()
@@ -142,7 +148,7 @@ export async function saveNewAmazonItem(
     Sentry.captureException(error);
     throw error;
   }
-}
+};
 
 export async function updateProfitAndROI(ean: string): Promise<void> {
   try {

@@ -1,9 +1,18 @@
 import * as Sentry from "@sentry/nextjs";
+import { type KauflandProductData } from "~/marketplaceConnectors/kaufland/kauflandScrapper/kauflandScrapper.types";
 import {
   kauflandSellerApiDeleteAllUnitsUsingUnitIds,
+  kauflandSellerApiGetProductDataByEAN,
   kauflandSellerApiGetUnitsByEAN,
 } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi";
-import { updateKauflandUnitListing } from "~/server/queries";
+import {
+  type KauflandProductDataSchemaType,
+  type KauflandSellerApiUnit,
+} from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi.types";
+import {
+  saveOrUpdateKauflandItemProductData,
+  updateKauflandUnitListing,
+} from "~/server/queries";
 
 export const kauflandUpdateListedUnitsToDatabaseForAUser = async (
   userId: string,
@@ -41,16 +50,17 @@ export const kauflandRemoveListedUnitsForASingleUser = async (
   ean: string,
 ): Promise<void> => {
   try {
-    const kauflandListedUnitsForSale = await kauflandSellerApiGetUnitsByEAN({
-      ean,
-    });
+    const kauflandListedUnitsForSale: KauflandSellerApiUnit[] =
+      await kauflandSellerApiGetUnitsByEAN({
+        ean,
+      });
 
     console.log("kauflandListedUnitesForSale", kauflandListedUnitsForSale);
 
-    const unitIds = kauflandListedUnitsForSale.map((unit) =>
+    const unitIds: string[] = kauflandListedUnitsForSale.map((unit) =>
       unit.id_unit.toString(),
     );
-    await kauflandSellerApiDeleteAllUnitsUsingUnitIds({ unitIds });
+    await kauflandSellerApiDeleteAllUnitsUsingUnitIds(unitIds);
     const updatedPromises = unitIds.map(async (unitId) => {
       await updateKauflandUnitListing(userId, ean, unitId, false);
     });
@@ -59,6 +69,47 @@ export const kauflandRemoveListedUnitsForASingleUser = async (
   } catch (error) {
     Sentry.captureException(error);
     console.error("kauflandSaveListedUnitsToDatabase - Error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update the Kaufland product data for a given EAN.
+ *
+ * @param ean - The EAN of the product to get data for.
+ * */
+export const kauflandUpdateProductData = async (
+  ean: string,
+): Promise<boolean> => {
+  try {
+    const kauflandProductData: KauflandProductDataSchemaType | null =
+      await kauflandSellerApiGetProductDataByEAN(ean);
+
+    if (kauflandProductData?.units[0]) {
+      const kauflandProductDataForDatabase: KauflandProductData = {
+        productFound: true,
+        kauflandProductId: kauflandProductData.id_product.toString(),
+        productName: kauflandProductData.title,
+        kauflandPrice: kauflandProductData.units[0].price.toString(),
+        kauflandLink: kauflandProductData.url,
+        kauflandVat: kauflandProductData.category.vat.toString(),
+        kauflandVariableFee:
+          kauflandProductData.category.variable_fee.toString(),
+        kauflandFixedFee: kauflandProductData.category.fixed_fee.toString(),
+        kauflandShippingRate:
+          kauflandProductData.units[0].shipping_rate.toString(),
+      };
+
+      await saveOrUpdateKauflandItemProductData(
+        ean,
+        kauflandProductDataForDatabase,
+      );
+      return true;
+    }
+    return false;
+  } catch (error) {
+    Sentry.captureException(error);
+    console.error("kauflandUpdateProductData - Error:", error);
     throw error;
   }
 };

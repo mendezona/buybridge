@@ -3,9 +3,8 @@ import * as Sentry from "@sentry/nextjs";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
-import { amazonApi } from "~/marketplaceConnectors/amazon/amazonApi/amazonApi";
-import { type AmazonProductData } from "~/marketplaceConnectors/amazon/amazonApi/amazonApi.types";
-import { saveNewAmazonItem, updateProfitAndROI } from "~/server/queries";
+import { addOrRefreshAmazonProductData } from "~/app/actions/amazonActions";
+import { updateProfitAndROI } from "~/server/queries";
 
 const addNewProductAmazonSchema = z.object({
   ean: z.string(),
@@ -17,6 +16,9 @@ const rateLimit = new Ratelimit({
   analytics: true,
 });
 
+/**
+ * Endpoint to add new Amazon product data to the database
+ */
 export async function POST(request: Request) {
   console.log("API called - addnewproductamazon");
   try {
@@ -36,8 +38,8 @@ export async function POST(request: Request) {
     const json = await request.json();
     const { ean } = addNewProductAmazonSchema.parse(json);
 
-    const amazonProductData: AmazonProductData = await amazonApi({ ean });
-    if (!amazonProductData.productFound) {
+    const productSuccessfullyAdded = await addOrRefreshAmazonProductData(ean);
+    if (!productSuccessfullyAdded) {
       return new Response(
         JSON.stringify({
           message: "Amazon product not found",
@@ -49,7 +51,6 @@ export async function POST(request: Request) {
       );
     }
 
-    await saveNewAmazonItem(ean, amazonProductData);
     await updateProfitAndROI(ean);
 
     return new Response(
