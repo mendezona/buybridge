@@ -9,6 +9,7 @@ import {
   type KauflandProductDataSchemaType,
   type KauflandSellerApiUnit,
 } from "~/marketplaceConnectors/kaufland/kauflandSellerApi/kauflandSellerApi.types";
+import { formatToTwoDecimalPlaces } from "~/marketplaceConnectors/scrappers.helpers";
 import {
   saveOrUpdateKauflandItemProductData,
   updateKauflandUnitListing,
@@ -90,14 +91,17 @@ export const kauflandUpdateProductData = async (
         productFound: true,
         kauflandProductId: kauflandProductData.id_product.toString(),
         productName: kauflandProductData.title,
-        kauflandPrice: kauflandProductData.units[0].price.toString(),
+        kauflandPrice: formatToTwoDecimalPlaces(
+          kauflandProductData.units[0].price,
+        ).toString(),
         kauflandLink: kauflandProductData.url,
         kauflandVat: kauflandProductData.category.vat.toString(),
         kauflandVariableFee:
           kauflandProductData.category.variable_fee.toString(),
         kauflandFixedFee: kauflandProductData.category.fixed_fee.toString(),
-        kauflandShippingRate:
-          kauflandProductData.units[0].shipping_rate.toString(),
+        kauflandShippingRate: formatToTwoDecimalPlaces(
+          kauflandProductData.units[0].shipping_rate,
+        ).toString(),
       };
 
       await saveOrUpdateKauflandItemProductData(

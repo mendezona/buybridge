@@ -47,7 +47,14 @@ export const waitForJavascriptToLoad = async (
   throw new Error("Timeout waiting for Javascript to load");
 };
 
-export function formatToTwoDecimalPlaces(num: number): string {
+/**
+ * Formats a number to include two decimal places
+ *
+ * @param num - The number to format.
+ *
+ * @returns The formatted number. Eg: 1000 -> 10.00
+ */
+export const formatToTwoDecimalPlaces = (num: number): string => {
   const formattedNumber = (num / 100).toFixed(2);
   return formattedNumber;
-}
+};
