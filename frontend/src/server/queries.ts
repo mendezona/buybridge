@@ -155,7 +155,10 @@ export const saveOrUpdateAmazonItemProductData = async (
  *
  * @param ean - EAN of the product to update
  */
-export async function updateProfitAndROI(ean: string): Promise<void> {
+export async function updateProfitAndROI(
+  ean: string,
+  freeShippping = true,
+): Promise<void> {
   try {
     const existingItem = await db
       .select()
@@ -181,9 +184,9 @@ export async function updateProfitAndROI(ean: string): Promise<void> {
       const kauflandFixedFeeReduction: Decimal = new Decimal(
         existingItem[0].kauflandFixedFee,
       );
-      const kauflandShippingRateReduction: Decimal = new Decimal(
-        existingItem[0].kauflandShippingRate,
-      );
+      const kauflandShippingRateReduction: Decimal = freeShippping
+        ? new Decimal(0)
+        : new Decimal(existingItem[0].kauflandShippingRate);
 
       const netBuy: Decimal = amazonPrice.div(kauflandVATReduction.plus(1));
       const netSell: Decimal = kauflandPrice.div(kauflandVATReduction.plus(1));
